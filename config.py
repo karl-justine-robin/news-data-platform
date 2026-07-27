@@ -1,0 +1,1 @@
+SAMPLE_FEED = "data/sample_data/businessdesk.json"

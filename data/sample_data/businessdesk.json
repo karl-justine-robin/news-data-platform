@@ -1,0 +1,16 @@
+{
+    "feed_date": "2026-07-28",
+    "timezone": "Pacific/Auckland",
+    "items": [
+        {
+            "title": "Market rises",
+            "publish_date": "2026-07-28",
+            "content": "Stocks climbed today."
+        },
+        {
+            "title": "Inflation slows",
+            "publish_date": "2026-07-27",
+            "content": "Inflation eased this month."
+        }
+    ]
+}

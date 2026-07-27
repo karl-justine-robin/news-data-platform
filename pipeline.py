@@ -7,9 +7,10 @@ class Pipeline:
         print("Starting pipeline...\n")
 
         collector = Collector()
-        result = collector.collect()
+        data = collector.collect()
 
-        if result["status"] == "success":
-            print("✓ Feed loaded successfully.")
+        print(f"Feed Date : {data['feed_date']}")
+        print(f"Timezone  : {data['timezone']}")
+        print(f"Articles  : {len(data['items'])}")
 
         print("\nPipeline finished.")
