@@ -1,0 +1,11 @@
+{
+    "vendor": "BusinessDesk",
+
+    "version": "1.0",
+
+    "mappings": {
+        "headline": "title",
+        "published_at": "publish_date",
+        "body": "content"
+    }
+}
