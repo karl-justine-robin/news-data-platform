@@ -1,7 +1,7 @@
 from src.framework.collector.collector import Collector
 from src.framework.preprocessor.preprocessor import Preprocessor
 from src.framework.transformer.transformer import Transformer
-
+from src.framework.validator.validator import Validator
 
 class Pipeline:
 
@@ -23,6 +23,10 @@ class Pipeline:
         # Transform
         transformer = Transformer()
         articles = transformer.transform(data)
+
+        # Validator
+        validator = Validator()
+        articles = validator.validate(articles)
 
         print("\nStandardized Articles\n")
 
