@@ -25,6 +25,8 @@ class ArticleRepository:
 
             with connection.cursor() as cursor:
 
+                inserted = 0
+
                 for article in articles:
 
                     cursor.execute(
@@ -37,6 +39,12 @@ class ArticleRepository:
                             loaded_at
                         )
                         VALUES (%s, %s, %s, %s, %s)
+                        ON CONFLICT (
+                            headline,
+                            published_at,
+                            source
+                        )
+                        DO NOTHING;
                         """,
                         (
                             article["headline"],
@@ -47,4 +55,8 @@ class ArticleRepository:
                         ),
                     )
 
+                    inserted += cursor.rowcount
+
             connection.commit()
+
+        return inserted

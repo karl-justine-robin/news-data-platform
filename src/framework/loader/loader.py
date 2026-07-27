@@ -7,6 +7,6 @@ class Loader:
         print("Loading articles...")
 
         repository = ArticleRepository()
-        repository.save_articles(articles)
+        inserted = repository.save_articles(articles)
 
-        print(f"Inserted {len(articles)} articles into PostgreSQL.")
+        print(f"Inserted {inserted} new article(s) into PostgreSQL.")
