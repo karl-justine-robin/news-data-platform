@@ -1,4 +1,4 @@
-from pipeline import Pipeline
+from src.framework.pipeline import Pipeline
 
 
 def main():
@@ -11,4 +11,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    Pipeline().run()

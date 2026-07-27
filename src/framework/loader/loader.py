@@ -1,5 +1,14 @@
-import json
-from pathlib import Path
+from datetime import datetime
+
+import psycopg
+
+from config import (
+    DB_HOST,
+    DB_PORT,
+    DB_NAME,
+    DB_USER,
+    DB_PASSWORD,
+)
 
 
 class Loader:
@@ -7,17 +16,38 @@ class Loader:
     def load(self, articles):
         print("Loading articles...")
 
-        output_dir = Path("data/silver")
-        output_dir.mkdir(parents=True, exist_ok=True)
+        with psycopg.connect(
+            host=DB_HOST,
+            port=DB_PORT,
+            dbname=DB_NAME,
+            user=DB_USER,
+            password=DB_PASSWORD,
+        ) as connection:
 
-        output_file = output_dir / "articles.json"
+            with connection.cursor() as cursor:
 
-        with open(output_file, "w", encoding="utf-8") as file:
-            json.dump(
-                articles,
-                file,
-                indent=4,
-                ensure_ascii=False
-            )
+                for article in articles:
 
-        print(f"Saved {len(articles)} articles to {output_file.as_posix()}")
+                    cursor.execute(
+                        """
+                        INSERT INTO articles (
+                            headline,
+                            published_at,
+                            body,
+                            source,
+                            loaded_at
+                        )
+                        VALUES (%s, %s, %s, %s, %s)
+                        """,
+                        (
+                            article["headline"],
+                            article["published_at"],
+                            article["body"],
+                            "BusinessDesk",
+                            datetime.now(),
+                        ),
+                    )
+
+            connection.commit()
+
+        print(f"Inserted {len(articles)} articles into PostgreSQL.")
