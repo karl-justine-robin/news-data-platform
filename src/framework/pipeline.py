@@ -1,3 +1,7 @@
+from time import perf_counter
+
+from src.framework.logging.logger import logger
+
 from src.framework.collector.collector import Collector
 from src.framework.preprocessor.preprocessor import Preprocessor
 from src.framework.transformer.transformer import Transformer
@@ -5,39 +9,35 @@ from src.framework.validator.validator import Validator
 from src.framework.loader.loader import Loader
 
 
-
 class Pipeline:
 
+    def __init__(self):
+        self.collector = Collector()
+        self.preprocessor = Preprocessor()
+        self.transformer = Transformer()
+        self.validator = Validator()
+        self.loader = Loader()
+
     def run(self):
-        print("Starting pipeline...\n")
+        start_time = perf_counter()
 
-        # Collect
-        collector = Collector()
-        data = collector.collect()
+        logger.info("Starting pipeline...")
 
-        print(f"Feed Date : {data['feed_date']}")
-        print(f"Timezone  : {data['timezone']}")
-        print(f"Articles  : {len(data['items'])}\n")
+        feed = self.collector.collect()
 
-        # Preprocess
-        preprocessor = Preprocessor()
-        data = preprocessor.preprocess(data)
+        preprocessed_feed = self.preprocessor.preprocess(feed)
 
-        # Transform
-        transformer = Transformer()
-        articles = transformer.transform(data)
+        transformed_articles = self.transformer.transform(preprocessed_feed)
 
-        # Validator
-        validator = Validator()
-        articles = validator.validate(articles)
+        validated_articles = self.validator.validate(transformed_articles)
 
-        # Loader
-        loader = Loader()
-        loader.load(articles)
+        self.loader.load(validated_articles)
 
-        print("\nStandardized Articles\n")
+        logger.info(
+            f"Processed {len(validated_articles)} standardized article(s)."
+        )
 
-        for article in articles:
-            print(article)
+        elapsed = perf_counter() - start_time
 
-        print("\nPipeline finished.")
+        logger.info("Pipeline finished.")
+        logger.info(f"Execution time: {elapsed:.2f} seconds.")

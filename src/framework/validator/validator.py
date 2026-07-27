@@ -1,31 +1,22 @@
-from datetime import datetime
+from src.framework.logging.logger import logger
 
 
 class Validator:
 
     def validate(self, articles):
-        print("Validating articles...")
+        logger.info("Validating articles...")
 
         validated_articles = []
 
         for article in articles:
 
-            if not article.get("headline"):
-                raise ValueError("Missing required field: headline")
+            if (
+                article["headline"]
+                and article["published_at"]
+                and article["body"]
+            ):
+                validated_articles.append(article)
 
-            if not article.get("published_at"):
-                raise ValueError("Missing required field: published_at")
-
-            if not article.get("body"):
-                raise ValueError("Missing required field: body")
-
-            try:
-                datetime.strptime(article["published_at"], "%Y-%m-%d")
-            except ValueError:
-                raise ValueError(
-                    f"Invalid date format: {article['published_at']}"
-                )
-
-            validated_articles.append(article)
+        logger.info(f"Validated {len(validated_articles)} article(s).")
 
         return validated_articles

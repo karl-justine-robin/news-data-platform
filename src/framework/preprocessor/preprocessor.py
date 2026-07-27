@@ -1,6 +1,14 @@
+from src.framework.logging.logger import logger
+
+
 class Preprocessor:
 
-    def preprocess(self, data):
-        print("Preprocessing feed...")
+    def preprocess(self, feed):
+        logger.info("Preprocessing feed...")
 
-        return data
+        # No preprocessing logic yet
+        preprocessed_feed = feed
+
+        logger.info("Preprocessing completed.")
+
+        return preprocessed_feed

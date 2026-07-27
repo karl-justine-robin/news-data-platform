@@ -1,28 +1,23 @@
-import json
+from src.framework.logging.logger import logger
 
 
 class Transformer:
 
-    def transform(self, data):
-        print("Transforming feed...")
-
-        with open(
-            "src/framework/mappings/businessdesk.json",
-            "r",
-            encoding="utf-8"
-        ) as file:
-            config = json.load(file)
-
-        mappings = config["mappings"]
+    def transform(self, feed):
+        logger.info("Transforming feed...")
 
         articles = []
 
-        for item in data["items"]:
-            article = {}
+        for item in feed["items"]:
 
-            for target_field, source_field in mappings.items():
-                article[target_field] = item.get(source_field)
+            article = {
+                "headline": item["title"],
+                "published_at": item["publish_date"],
+                "body": item["content"],
+            }
 
             articles.append(article)
+
+        logger.info(f"Transformed {len(articles)} article(s).")
 
         return articles

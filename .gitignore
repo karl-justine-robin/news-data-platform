@@ -9,6 +9,10 @@ __pycache__/
 # Environment variables
 .env
 
+# Logs
+logs/
+*.log
+
 # IDE
 .vscode/
 .idea/
