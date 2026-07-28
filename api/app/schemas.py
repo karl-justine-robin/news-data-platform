@@ -14,3 +14,10 @@ class Article(BaseModel):
     model_config = {
         "from_attributes": True
     }
+
+
+class ArticleList(BaseModel):
+    page: int
+    size: int
+    total: int
+    items: list[Article]
