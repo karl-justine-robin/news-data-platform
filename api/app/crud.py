@@ -3,6 +3,8 @@ from sqlalchemy.orm import Session
 from app.enums import ArticleSort, SortDirection
 from app.models import Article
 
+from sqlalchemy import or_
+
 
 def get_articles(
     db: Session,
@@ -54,3 +56,50 @@ def get_article(
         .filter(Article.id == article_id)
         .first()
     )
+
+
+
+def search_articles(
+    db: Session,
+    q: str,
+    skip: int = 0,
+    limit: int = 10,
+    sort: ArticleSort = ArticleSort.published_at,
+    direction: SortDirection = SortDirection.desc,
+):
+    query = (
+        db.query(Article)
+        .filter(
+            or_(
+                Article.headline.ilike(f"%{q}%"),
+                Article.body.ilike(f"%{q}%"),
+            )
+        )
+    )
+
+    sort_columns = {
+        ArticleSort.published_at: Article.published_at,
+        ArticleSort.headline: Article.headline,
+        ArticleSort.loaded_at: Article.loaded_at,
+    }
+
+    order_by = sort_columns[sort]
+
+    if direction == SortDirection.asc:
+        query = query.order_by(order_by.asc())
+    else:
+        query = query.order_by(order_by.desc())
+
+    total = query.count()
+
+    articles = (
+        query
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
+
+    return {
+        "total": total,
+        "items": articles,
+    }
