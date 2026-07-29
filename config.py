@@ -1,10 +1,10 @@
 import os
-
 from dotenv import load_dotenv
+from pathlib import Path
 
 load_dotenv()
 
-SAMPLE_FEED = "data/sample_data/businessdesk.json"
+SAMPLE_DATA_DIR = Path("data/sample_data")
 
 DB_HOST = os.getenv("DB_HOST")
 DB_PORT = int(os.getenv("DB_PORT", 5432))

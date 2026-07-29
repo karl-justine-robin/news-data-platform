@@ -1,16 +1,91 @@
 {
-    "feed_date": "2026-07-28",
-    "timezone": "Pacific/Auckland",
-    "items": [
-        {
-            "title": "Market rises",
-            "publish_date": "2026-07-28",
-            "content": "Stocks climbed today."
-        },
-        {
-            "title": "Inflation slows",
-            "publish_date": "2026-07-27",
-            "content": "Inflation eased this month."
-        }
-    ]
+  "feed_date": "2026-07-30",
+  "timezone": "Pacific/Auckland",
+  "vendor": "BusinessDesk",
+  "items": [
+    {
+      "title": "NZX closes higher as banking stocks gain",
+      "publish_date": "2026-07-30",
+      "content": "New Zealand banking stocks led the market higher after stronger-than-expected quarterly earnings from major financial institutions.",
+      "source": "BusinessDesk",
+      "category": "Markets"
+    },
+    {
+      "title": "Business confidence improves for fourth consecutive month",
+      "publish_date": "2026-07-30",
+      "content": "A nationwide survey showed business confidence continuing to recover as firms reported stronger sales expectations.",
+      "source": "BusinessDesk",
+      "category": "Economy"
+    },
+    {
+      "title": "Retail spending increases during winter sales",
+      "publish_date": "2026-07-29",
+      "content": "Retailers reported stronger customer traffic as seasonal promotions boosted consumer spending across major cities.",
+      "source": "BusinessDesk",
+      "category": "Retail"
+    },
+    {
+      "title": "Kiwi technology startups attract fresh investment",
+      "publish_date": "2026-07-29",
+      "content": "Several New Zealand technology startups secured funding to expand artificial intelligence and cloud-based services.",
+      "source": "BusinessDesk",
+      "category": "Technology"
+    },
+    {
+      "title": "Construction sector records modest growth",
+      "publish_date": "2026-07-28",
+      "content": "Infrastructure projects supported construction activity despite higher material costs and labour shortages.",
+      "source": "BusinessDesk",
+      "category": "Industry"
+    },
+    {
+      "title": "Renewable energy projects receive government support",
+      "publish_date": "2026-07-28",
+      "content": "Additional funding was announced for wind and solar energy developments to improve long-term energy security.",
+      "source": "BusinessDesk",
+      "category": "Energy"
+    },
+    {
+      "title": "Export demand strengthens dairy industry outlook",
+      "publish_date": "2026-07-27",
+      "content": "Strong overseas demand for dairy products improved export expectations for the remainder of the year.",
+      "source": "BusinessDesk",
+      "category": "Trade"
+    },
+    {
+      "title": "Commercial property market shows signs of recovery",
+      "publish_date": "2026-07-27",
+      "content": "Office occupancy rates increased as businesses gradually expanded operations in major business districts.",
+      "source": "BusinessDesk",
+      "category": "Real Estate"
+    },
+    {
+      "title": "Healthcare providers increase digital investments",
+      "publish_date": "2026-07-26",
+      "content": "Hospitals and clinics accelerated digital transformation projects to improve patient services and operational efficiency.",
+      "source": "BusinessDesk",
+      "category": "Healthcare"
+    },
+    {
+      "title": "Food manufacturers expand production capacity",
+      "publish_date": "2026-07-26",
+      "content": "Manufacturers announced new production lines to meet growing domestic and international demand.",
+      "source": "BusinessDesk",
+      "category": "Industry"
+    },
+    {
+      "title": "Small businesses adopt AI tools to improve productivity",
+      "publish_date": "2026-07-25",
+      "content": "Local businesses are increasingly using AI-powered software to automate administrative tasks and customer support.",
+      "source": "BusinessDesk",
+      "category": "Technology"
+    },
+    {
+      "title": "Inflation continues to ease as fuel prices decline",
+      "publish_date": "2026-07-25",
+      "content": "Lower transportation and energy costs contributed to a slower pace of inflation during the latest reporting period.",
+      "source": "BusinessDesk",
+      "category": "Economy"
+    }
+  ]
 }

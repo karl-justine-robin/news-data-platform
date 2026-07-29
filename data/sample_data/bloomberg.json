@@ -1,0 +1,49 @@
+{
+  "feed_date": "2026-07-30",
+  "timezone": "America/New_York",
+  "vendor": "Bloomberg",
+  "items": [
+    {
+      "title": "Wall Street closes higher as technology shares rally",
+      "publish_date": "2026-07-30",
+      "content": "Technology companies led gains after reporting stronger-than-expected quarterly results.",
+      "source": "Bloomberg",
+      "category": "Technology"
+    },
+    {
+      "title": "Corporate mergers increase across financial sector",
+      "publish_date": "2026-07-29",
+      "content": "Investment firms announced several acquisition deals aimed at expanding market share.",
+      "source": "Bloomberg",
+      "category": "Finance"
+    },
+    {
+      "title": "Housing market stabilizes despite borrowing costs",
+      "publish_date": "2026-07-28",
+      "content": "Home prices remained stable as buyers adjusted to current mortgage rates.",
+      "source": "Bloomberg",
+      "category": "Real Estate"
+    },
+    {
+      "title": "Artificial intelligence spending reaches record levels",
+      "publish_date": "2026-07-27",
+      "content": "Businesses increased investment in AI infrastructure and automation platforms.",
+      "source": "Bloomberg",
+      "category": "Technology"
+    },
+    {
+      "title": "Consumer spending supports economic growth",
+      "publish_date": "2026-07-26",
+      "content": "Retail purchases remained resilient despite inflationary pressures.",
+      "source": "Bloomberg",
+      "category": "Economy"
+    },
+    {
+      "title": "Renewable energy companies attract investors",
+      "publish_date": "2026-07-25",
+      "content": "Green energy projects continued receiving strong institutional investment.",
+      "source": "Bloomberg",
+      "category": "Energy"
+    }
+  ]
+}

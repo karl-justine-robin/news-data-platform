@@ -1,0 +1,63 @@
+{
+  "feed_date": "2026-07-30",
+  "timezone": "UTC",
+  "vendor": "Reuters",
+  "items": [
+    {
+      "title": "Global stocks advance after central bank signals stability",
+      "publish_date": "2026-07-30",
+      "content": "Equity markets gained after policymakers indicated that interest rates would likely remain unchanged.",
+      "source": "Reuters",
+      "category": "Markets"
+    },
+    {
+      "title": "Oil prices climb on supply concerns",
+      "publish_date": "2026-07-29",
+      "content": "Crude oil prices rose following reports of reduced production from several exporting nations.",
+      "source": "Reuters",
+      "category": "Energy"
+    },
+    {
+      "title": "European inflation slows in latest report",
+      "publish_date": "2026-07-29",
+      "content": "Consumer price growth eased across the eurozone as energy costs declined.",
+      "source": "Reuters",
+      "category": "Economy"
+    },
+    {
+      "title": "Major bank reports stronger quarterly profit",
+      "publish_date": "2026-07-28",
+      "content": "Improved lending activity and lower operating costs boosted quarterly earnings.",
+      "source": "Reuters",
+      "category": "Finance"
+    },
+    {
+      "title": "Semiconductor demand remains strong",
+      "publish_date": "2026-07-27",
+      "content": "Global demand for AI chips continued to drive semiconductor production.",
+      "source": "Reuters",
+      "category": "Technology"
+    },
+    {
+      "title": "Shipping costs continue to decline",
+      "publish_date": "2026-07-27",
+      "content": "Lower freight rates reduced logistics expenses for international businesses.",
+      "source": "Reuters",
+      "category": "Trade"
+    },
+    {
+      "title": "Airline industry records increase in passenger traffic",
+      "publish_date": "2026-07-26",
+      "content": "Travel demand remained strong during the summer holiday season.",
+      "source": "Reuters",
+      "category": "Industry"
+    },
+    {
+      "title": "Gold prices remain steady amid market uncertainty",
+      "publish_date": "2026-07-25",
+      "content": "Investors maintained positions in precious metals while monitoring economic data.",
+      "source": "Reuters",
+      "category": "Markets"
+    }
+  ]
+}

@@ -50,7 +50,7 @@ class ArticleRepository:
                             article["headline"],
                             article["published_at"],
                             article["body"],
-                            "BusinessDesk",
+                            article["source"],      # <-- Use source from the article
                             datetime.now(),
                         ),
                     )

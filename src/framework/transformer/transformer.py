@@ -14,6 +14,7 @@ class Transformer:
                 "headline": item["title"],
                 "published_at": item["publish_date"],
                 "body": item["content"],
+                "source": item["source"],      # Preserve the source
             }
 
             articles.append(article)
