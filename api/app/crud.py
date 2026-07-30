@@ -5,6 +5,47 @@ from app.models import Article
 
 from sqlalchemy import or_
 
+from sqlalchemy import func
+from app import models
+
+
+def get_publication_trend(db):
+    results = (
+        db.query(
+            models.Article.published_at,
+            func.count(models.Article.id).label("count"),
+        )
+        .group_by(models.Article.published_at)
+        .order_by(models.Article.published_at)
+        .all()
+    )
+
+    return [
+        {
+            "published_at": row.published_at,
+            "count": row.count,
+        }
+        for row in results
+    ]
+
+def get_articles_by_source(db):
+    results = (
+        db.query(
+            models.Article.source,
+            func.count(models.Article.id).label("count"),
+        )
+        .group_by(models.Article.source)
+        .order_by(func.count(models.Article.id).desc())
+        .all()
+    )
+
+    return [
+        {
+            "source": row.source,
+            "count": row.count,
+        }
+        for row in results
+    ]
 
 def get_articles(
     db: Session,

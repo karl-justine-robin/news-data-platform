@@ -44,12 +44,29 @@ if response.status_code != 200:
 
 data = response.json()
 
-
 if len(data["items"]) == 0:
     st.warning("No articles found.")
     st.stop()
 
 df = pd.DataFrame(data["items"])
+
+# -------------------------------------
+# Analytics API
+# -------------------------------------
+
+source_response = requests.get(f"{API_URL}/analytics/sources")
+trend_response = requests.get(f"{API_URL}/analytics/publication-trend")
+
+if source_response.status_code != 200:
+    st.error("Failed to load source analytics.")
+    st.stop()
+
+if trend_response.status_code != 200:
+    st.error("Failed to load publication trend.")
+    st.stop()
+
+source_df = pd.DataFrame(source_response.json())
+trend_df = pd.DataFrame(trend_response.json())
 
 # -------------------------------------
 # KPI Cards
@@ -86,18 +103,12 @@ st.divider()
 # Articles by Source
 # -------------------------------------
 
-if "source" in df.columns:
-
-    source_summary = (
-        df.groupby("source")
-        .size()
-        .reset_index(name="article_count")
-    )
+if not source_df.empty:
 
     fig = px.bar(
-        source_summary,
+        source_df,
         x="source",
-        y="article_count",
+        y="count",
         title="Articles by Source",
     )
 
@@ -107,18 +118,12 @@ if "source" in df.columns:
 # Articles by Date
 # -------------------------------------
 
-if "published_at" in df.columns:
-
-    date_summary = (
-        df.groupby("published_at")
-        .size()
-        .reset_index(name="article_count")
-    )
+if not trend_df.empty:
 
     fig2 = px.line(
-        date_summary,
+        trend_df,
         x="published_at",
-        y="article_count",
+        y="count",
         markers=True,
         title="Articles by Publication Date",
     )
