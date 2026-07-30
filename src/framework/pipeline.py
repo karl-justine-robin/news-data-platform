@@ -7,6 +7,7 @@ from src.framework.preprocessor.preprocessor import Preprocessor
 from src.framework.transformer.transformer import Transformer
 from src.framework.validator.validator import Validator
 from src.framework.loader.loader import Loader
+from src.framework.tracker.run_tracker import RunTracker
 
 
 class Pipeline:
@@ -17,25 +18,46 @@ class Pipeline:
         self.transformer = Transformer()
         self.validator = Validator()
         self.loader = Loader()
+        self.tracker = RunTracker()
 
     def run(self):
         start_time = perf_counter()
 
         logger.info("Starting pipeline...")
 
-        feed = self.collector.collect()
+        run = self.tracker.start()
 
-        preprocessed_feed = self.preprocessor.preprocess(feed)
+        try:
+            feed = self.collector.collect()
 
-        transformed_articles = self.transformer.transform(preprocessed_feed)
+            preprocessed_feed = self.preprocessor.preprocess(feed)
 
-        validated_articles = self.validator.validate(transformed_articles)
+            transformed_articles = self.transformer.transform(preprocessed_feed)
 
-        self.loader.load(validated_articles)
+            validated_articles = self.validator.validate(transformed_articles)
 
-        logger.info(
-            f"Processed {len(validated_articles)} standardized article(s)."
-        )
+            self.loader.load(validated_articles)
+
+            records = len(validated_articles)
+
+            logger.info(
+                f"Processed {records} standardized article(s)."
+            )
+
+            self.tracker.finish(
+                run=run,
+                records_processed=records,
+                success=True,
+            )
+
+        except Exception as e:
+            self.tracker.finish(
+                run=run,
+                records_processed=0,
+                success=False,
+                error_message=str(e),
+            )
+            raise
 
         elapsed = perf_counter() - start_time
 

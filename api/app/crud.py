@@ -1,13 +1,9 @@
+from sqlalchemy import func, or_
 from sqlalchemy.orm import Session
 
-from app.enums import ArticleSort, SortDirection
-from app.models import Article
-
-from sqlalchemy import or_
-
-from sqlalchemy import func
-from app import models
-
+from api.app import models
+from api.app.enums import ArticleSort, SortDirection
+from api.app.models import Article
 
 def get_publication_trend(db):
     results = (
