@@ -1,11 +1,16 @@
 import logging
 from pathlib import Path
 
+from config import LOG_LEVEL
+
 LOG_DIR = Path("logs")
 LOG_DIR.mkdir(exist_ok=True)
 
 logger = logging.getLogger("news_pipeline")
-logger.setLevel(logging.INFO)
+
+logger.setLevel(
+    getattr(logging, LOG_LEVEL.upper(), logging.INFO)
+)
 
 if not logger.handlers:
 

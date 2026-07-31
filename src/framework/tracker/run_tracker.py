@@ -2,6 +2,7 @@ from src.framework.logging.logger import logger
 from src.framework.repository.pipeline_run_repository import (
     PipelineRunRepository,
 )
+from config import PIPELINE_NAME
 
 
 class RunTracker:
@@ -12,7 +13,7 @@ class RunTracker:
 
     def start(self):
         self.run = self.repository.start_run(
-            pipeline_name="News Data Pipeline"
+            pipeline_name=PIPELINE_NAME
         )
 
         logger.info(
