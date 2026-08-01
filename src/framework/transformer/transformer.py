@@ -1,4 +1,5 @@
 from src.framework.logging.logger import logger
+from src.framework.mappings.json_mapper import JsonMapper
 
 
 class Transformer:
@@ -10,13 +11,25 @@ class Transformer:
 
         for feed in feeds:
 
-            for item in feed["items"]:
+            source = feed.get("source", "Unknown")
+
+            mapping = JsonMapper.get_mapping(source)
+
+            if mapping is None:
+                logger.warning(
+                    f"No mapping found for source '{source}'. Skipping feed."
+                )
+                continue
+
+            items = feed.get(mapping["items"], [])
+
+            for item in items:
 
                 article = {
-                    "headline": item["title"],
-                    "published_at": item["publish_date"],
-                    "body": item["content"],
-                    "source": item["source"],
+                    "headline": item.get(mapping["headline"]),
+                    "published_at": item.get(mapping["published_at"]),
+                    "body": item.get(mapping["body"]),
+                    "source": source,
                 }
 
                 articles.append(article)

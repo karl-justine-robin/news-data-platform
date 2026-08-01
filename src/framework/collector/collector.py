@@ -7,6 +7,14 @@ from src.framework.error.retry import retry
 from src.framework.logging.logger import logger
 
 
+SOURCE_NAMES = {
+    "businessdesk": "BusinessDesk",
+    "bloomberg": "Bloomberg",
+    "reuters": "Reuters",
+    "cnbc": "CNBC",
+}
+
+
 class Collector:
 
     def collect(self):
@@ -46,15 +54,18 @@ class Collector:
 
                 feed = json.load(stream)
 
-            source = feed.get(
+            feed["source"] = feed.get(
                 "source",
-                file.stem.capitalize(),
+                SOURCE_NAMES.get(
+                    file.stem.lower(),
+                    file.stem,
+                ),
             )
 
             logger.info(
                 "Collected %d article(s) from %s (feed date: %s).",
                 len(feed["items"]),
-                source,
+                feed["source"],
                 feed["feed_date"],
             )
 
