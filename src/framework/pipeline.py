@@ -8,6 +8,7 @@ from src.framework.transformer.transformer import Transformer
 from src.framework.validator.validator import Validator
 from src.framework.loader.loader import Loader
 from src.framework.tracker.run_tracker import RunTracker
+from src.framework.schema.schema_validator import SchemaValidator
 from src.framework.error.exceptions import PipelineException
 
 
@@ -15,6 +16,7 @@ class Pipeline:
 
     def __init__(self):
         self.collector = Collector()
+        self.schema_validator = SchemaValidator()
         self.preprocessor = Preprocessor()
         self.transformer = Transformer()
         self.validator = Validator()
@@ -30,6 +32,8 @@ class Pipeline:
 
         try:
             feed = self.collector.collect()
+
+            self.schema_validator.validate(feed)
 
             preprocessed_feed = self.preprocessor.preprocess(feed)
 
