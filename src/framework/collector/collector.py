@@ -1,46 +1,74 @@
 import json
-from pathlib import Path
 
 from config import SAMPLE_DATA_DIR
+
+from src.framework.error.exceptions import CollectorException
+from src.framework.error.retry import retry
 from src.framework.logging.logger import logger
 
 
 class Collector:
 
     def collect(self):
-        combined_feed = {
-            "feed_date": None,
-            "timezone": None,
-            "items": [],
-        }
+        logger.info("Starting data collection...")
 
-        json_files = sorted(Path(SAMPLE_DATA_DIR).glob("*.json"))
+        try:
+            return retry(
+                self._collect,
+                max_attempts=3,
+                delay=2,
+                exceptions=(
+                    FileNotFoundError,
+                    json.JSONDecodeError,
+                    OSError,
+                ),
+            )
 
-        for json_file in json_files:
-            logger.info("Collecting data from %s...", json_file.stem)
+        except Exception as error:
+            raise CollectorException(
+                f"Data collection failed: {error}"
+            ) from error
 
-            with open(json_file, "r", encoding="utf-8") as file:
-                data = json.load(file)
+    def _collect(self):
+        feeds = []
+
+        for file in sorted(SAMPLE_DATA_DIR.glob("*.json")):
+
+            logger.info(
+                f"Collecting data from {file.stem}..."
+            )
+
+            with open(
+                file,
+                "r",
+                encoding="utf-8",
+            ) as stream:
+
+                feed = json.load(stream)
+
+            source = feed.get(
+                "source",
+                file.stem.capitalize(),
+            )
 
             logger.info(
                 "Collected %d article(s) from %s (feed date: %s).",
-                len(data["items"]),
-                data.get("vendor", json_file.stem),
-                data["feed_date"],
+                len(feed["items"]),
+                source,
+                feed["feed_date"],
             )
 
-            combined_feed["items"].extend(data["items"])
+            feeds.append(feed)
 
-            if combined_feed["feed_date"] is None:
-                combined_feed["feed_date"] = data["feed_date"]
-
-            if combined_feed["timezone"] is None:
-                combined_feed["timezone"] = data["timezone"]
+        total_articles = sum(
+            len(feed["items"])
+            for feed in feeds
+        )
 
         logger.info(
             "Collected %d total article(s) from %d feed(s).",
-            len(combined_feed["items"]),
-            len(json_files),
+            total_articles,
+            len(feeds),
         )
 
-        return combined_feed
+        return feeds

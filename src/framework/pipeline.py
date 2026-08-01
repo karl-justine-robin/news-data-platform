@@ -8,6 +8,7 @@ from src.framework.transformer.transformer import Transformer
 from src.framework.validator.validator import Validator
 from src.framework.loader.loader import Loader
 from src.framework.tracker.run_tracker import RunTracker
+from src.framework.error.exceptions import PipelineException
 
 
 class Pipeline:
@@ -32,9 +33,13 @@ class Pipeline:
 
             preprocessed_feed = self.preprocessor.preprocess(feed)
 
-            transformed_articles = self.transformer.transform(preprocessed_feed)
+            transformed_articles = self.transformer.transform(
+                preprocessed_feed
+            )
 
-            validated_articles = self.validator.validate(transformed_articles)
+            validated_articles = self.validator.validate(
+                transformed_articles
+            )
 
             self.loader.load(validated_articles)
 
@@ -50,16 +55,37 @@ class Pipeline:
                 success=True,
             )
 
-        except Exception as e:
+        except PipelineException as error:
+
+            logger.error(str(error))
+
             self.tracker.finish(
                 run=run,
                 records_processed=0,
                 success=False,
-                error_message=str(e),
+                error_message=str(error),
             )
+
+            raise
+
+        except Exception as error:
+
+            logger.exception(
+                "Unexpected pipeline error."
+            )
+
+            self.tracker.finish(
+                run=run,
+                records_processed=0,
+                success=False,
+                error_message=str(error),
+            )
+
             raise
 
         elapsed = perf_counter() - start_time
 
         logger.info("Pipeline finished.")
-        logger.info(f"Execution time: {elapsed:.2f} seconds.")
+        logger.info(
+            f"Execution time: {elapsed:.2f} seconds."
+        )
