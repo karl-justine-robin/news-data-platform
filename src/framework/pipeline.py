@@ -1,15 +1,14 @@
 from time import perf_counter
 
-from src.framework.logging.logger import logger
-
 from src.framework.collector.collector import Collector
+from src.framework.error.exceptions import PipelineException
+from src.framework.loader.loader import Loader
+from src.framework.logging.logger import logger
 from src.framework.preprocessor.preprocessor import Preprocessor
+from src.framework.schema.schema_validator import SchemaValidator
+from src.framework.tracker.run_tracker import RunTracker
 from src.framework.transformer.transformer import Transformer
 from src.framework.validator.validator import Validator
-from src.framework.loader.loader import Loader
-from src.framework.tracker.run_tracker import RunTracker
-from src.framework.schema.schema_validator import SchemaValidator
-from src.framework.error.exceptions import PipelineException
 
 
 class Pipeline:
@@ -28,14 +27,16 @@ class Pipeline:
 
         logger.info("Starting pipeline...")
 
-        run = self.tracker.start()
+        run_id = self.tracker.start()
 
         try:
             feed = self.collector.collect()
 
             self.schema_validator.validate(feed)
 
-            preprocessed_feed = self.preprocessor.preprocess(feed)
+            preprocessed_feed = self.preprocessor.preprocess(
+                feed
+            )
 
             transformed_articles = self.transformer.transform(
                 preprocessed_feed
@@ -50,13 +51,13 @@ class Pipeline:
             records = len(validated_articles)
 
             logger.info(
-                f"Processed {records} standardized article(s)."
+                "Processed %d standardized article(s).",
+                records,
             )
 
             self.tracker.finish(
-                run=run,
+                run_id=run_id,
                 records_processed=records,
-                success=True,
             )
 
         except PipelineException as error:
@@ -64,7 +65,7 @@ class Pipeline:
             logger.error(str(error))
 
             self.tracker.finish(
-                run=run,
+                run_id=run_id,
                 records_processed=0,
                 success=False,
                 error_message=str(error),
@@ -79,7 +80,7 @@ class Pipeline:
             )
 
             self.tracker.finish(
-                run=run,
+                run_id=run_id,
                 records_processed=0,
                 success=False,
                 error_message=str(error),
@@ -91,5 +92,6 @@ class Pipeline:
 
         logger.info("Pipeline finished.")
         logger.info(
-            f"Execution time: {elapsed:.2f} seconds."
+            "Execution time: %.2f seconds.",
+            elapsed,
         )

@@ -1,37 +1,50 @@
+from datetime import datetime
+
+from config import PIPELINE_NAME
 from src.framework.logging.logger import logger
 from src.framework.repository.pipeline_run_repository import (
     PipelineRunRepository,
 )
-from config import PIPELINE_NAME
 
 
 class RunTracker:
 
     def __init__(self):
         self.repository = PipelineRunRepository()
-        self.run = None
+        self.run_id = None
+        self.start_time = None
 
     def start(self):
-        self.run = self.repository.start_run(
-            pipeline_name=PIPELINE_NAME
+
+        self.start_time = datetime.now()
+
+        self.run_id = self.repository.start_run(
+            pipeline_name=PIPELINE_NAME,
         )
 
         logger.info(
-            f"Pipeline started at {self.run.start_time}"
+            "Pipeline started at %s",
+            self.start_time,
         )
 
-        return self.run
-    
+        return self.run_id
 
     def finish(
         self,
-        run,
+        run_id,
         records_processed,
         success=True,
         error_message=None,
     ):
+
+        end_time = datetime.now()
+
+        duration = (
+            end_time - self.start_time
+        ).total_seconds()
+
         self.repository.finish_run(
-            run=run,
+            run_id=run_id,
             success=success,
             records_processed=records_processed,
             error_message=error_message,
@@ -41,12 +54,10 @@ class RunTracker:
             f"""
     Pipeline Run Summary
     --------------------
-    Status: {run.status}
-    Started: {run.start_time}
-    Finished: {run.end_time}
-    Duration: {run.duration_seconds:.4f}s
-    Records: {run.records_processed}
+    Status: {"SUCCESS" if success else "FAILED"}
+    Started: {self.start_time}
+    Finished: {end_time}
+    Duration: {duration:.4f}s
+    Records: {records_processed}
     """
         )
-
-        self.repository.close()

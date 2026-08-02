@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from api.app import models
 from api.app.enums import ArticleSort, SortDirection
 from api.app.models import Article
+from api.app.models import PipelineRun
 
 def get_publication_trend(db):
     results = (
@@ -139,4 +140,52 @@ def search_articles(
     return {
         "total": total,
         "items": articles,
+    }
+
+
+def get_pipeline_runs(db: Session):
+
+    return (
+        db.query(PipelineRun)
+        .order_by(PipelineRun.start_time.desc())
+        .all()
+    )
+
+
+def get_latest_pipeline_run(db: Session):
+
+    return (
+        db.query(PipelineRun)
+        .order_by(PipelineRun.start_time.desc())
+        .first()
+    )
+
+
+def get_pipeline_stats(db: Session):
+
+    total_runs = db.query(PipelineRun).count()
+
+    successful_runs = (
+        db.query(PipelineRun)
+        .filter(PipelineRun.status == "SUCCESS")
+        .count()
+    )
+
+    failed_runs = (
+        db.query(PipelineRun)
+        .filter(PipelineRun.status == "FAILED")
+        .count()
+    )
+
+    success_rate = (
+        successful_runs / total_runs * 100
+        if total_runs
+        else 0
+    )
+
+    return {
+        "total_runs": total_runs,
+        "successful_runs": successful_runs,
+        "failed_runs": failed_runs,
+        "success_rate": round(success_rate, 2),
     }

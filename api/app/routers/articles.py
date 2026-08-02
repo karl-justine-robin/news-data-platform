@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
-from app import crud, schemas
-from app.database import get_db
-from app.enums import ArticleSort, SortDirection
+from api.app import crud, schemas
+from api.app.database import get_db
+from api.app.enums import ArticleSort, SortDirection
 
 router = APIRouter(
     prefix="/articles",

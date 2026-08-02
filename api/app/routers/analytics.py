@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from app import crud
-from app.database import get_db
+from api.app import crud
+from api.app.database import get_db
 
 router = APIRouter(
     prefix="/analytics",
