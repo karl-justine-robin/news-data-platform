@@ -11,7 +11,7 @@ st.set_page_config(
 
 st.title("📰 News Data Platform Dashboard")
 
-API_URL = os.getenv("API_URL", "http://192.168.100.8:8000")
+API_URL = os.getenv("API_URL", "http://api:8000")
 
 # -------------------------------------
 # Search
@@ -24,12 +24,12 @@ search = st.text_input(
 
 if search:
     response = requests.get(
-        f"{API_URL}/search",
-        params={"q": search}
+        f"{API_URL}/api/v1/search",
+        params={"q": search},
     )
 else:
     response = requests.get(
-        f"{API_URL}/articles",
+        f"{API_URL}/api/v1/articles",
         params={
             "page": 1,
             "size": 100,
@@ -37,6 +37,7 @@ else:
             "direction": "desc",
         },
     )
+
 
 if response.status_code != 200:
     st.error(f"API Error: {response.status_code}")
@@ -54,8 +55,13 @@ df = pd.DataFrame(data["items"])
 # Analytics API
 # -------------------------------------
 
-source_response = requests.get(f"{API_URL}/analytics/sources")
-trend_response = requests.get(f"{API_URL}/analytics/publication-trend")
+source_response = requests.get(
+    f"{API_URL}/api/v1/analytics/sources"
+)
+
+trend_response = requests.get(
+    f"{API_URL}/api/v1/analytics/publication-trend"
+)
 
 if source_response.status_code != 200:
     st.error("Failed to load source analytics.")
