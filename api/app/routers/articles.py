@@ -5,13 +5,25 @@ from api.app import crud, schemas
 from api.app.database import get_db
 from api.app.enums import ArticleSort, SortDirection
 
+from api.app.constants import API_PREFIX
+
 router = APIRouter(
-    prefix="/articles",
+    prefix=f"{API_PREFIX}/articles",
     tags=["Articles"],
 )
 
-
-@router.get("", response_model=schemas.ArticleList)
+@router.get(
+    "",
+    response_model=schemas.ArticleList,
+    summary="List articles",
+    description="Returns a paginated list of news articles. Supports filtering by source, sorting, and pagination.",
+    response_description="Paginated list of articles",
+    responses={
+        400: {
+            "description": "Invalid request parameters",
+        },
+    },
+)
 def get_articles(
     page: int = Query(
         1,
@@ -30,11 +42,11 @@ def get_articles(
     ),
     sort: ArticleSort = Query(
         ArticleSort.published_at,
-        description="Field to sort by",
+        description="Field used to sort the results",
     ),
     direction: SortDirection = Query(
         SortDirection.desc,
-        description="Sort direction",
+        description="Sort direction (ascending or descending)",
     ),
     db: Session = Depends(get_db),
 ):
@@ -57,12 +69,26 @@ def get_articles(
     }
 
 
-@router.get("/{article_id}", response_model=schemas.Article)
+@router.get(
+    "/{article_id}",
+    response_model=schemas.Article,
+    summary="Get article",
+    description="Returns a single news article by its unique ID.",
+    response_description="Article details",
+    responses={
+        404: {
+            "description": "Article not found",
+        },
+    },
+)
 def get_article(
     article_id: int,
     db: Session = Depends(get_db),
 ):
-    article = crud.get_article(db, article_id)
+    article = crud.get_article(
+        db,
+        article_id,
+    )
 
     if article is None:
         raise HTTPException(

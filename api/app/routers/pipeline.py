@@ -4,17 +4,15 @@ from sqlalchemy.orm import Session
 from api.app import crud
 from api.app.database import get_db
 
-from pathlib import Path
-import sys
-
-# Allow the API project to import the ETL framework
-ROOT_DIR = Path(__file__).resolve().parents[3]
-sys.path.append(str(ROOT_DIR))
+from api.app.response_models import SuccessResponse
 
 from src.framework.pipeline import Pipeline
 
+from api.app.constants import API_PREFIX
+
+
 router = APIRouter(
-    prefix="/pipeline",
+    prefix=f"{API_PREFIX}/pipeline",
     tags=["Pipeline"],
 )
 
@@ -40,14 +38,22 @@ def get_pipeline_stats(
     return crud.get_pipeline_stats(db)
 
 
-@router.post("/run")
+@router.post(
+    "/run",
+    response_model=SuccessResponse,
+    summary="Run ETL Pipeline",
+    description="Triggers the ETL pipeline manually.",
+    responses={
+        500: {
+            "description": "Pipeline execution failed",
+        },
+    },
+)
 def run_pipeline():
 
     pipeline = Pipeline()
-
     pipeline.run()
 
-    return {
-        "status": "SUCCESS",
-        "message": "Pipeline executed successfully."
-    }
+    return SuccessResponse(
+        message="Pipeline executed successfully."
+    )
