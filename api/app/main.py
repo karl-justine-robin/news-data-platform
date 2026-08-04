@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 
+from api.app.exceptions import register_exception_handlers
 from api.app.routers import (
     analytics,
     articles,
@@ -8,22 +9,47 @@ from api.app.routers import (
     search,
 )
 
-from api.app.exceptions import register_exception_handlers
+openapi_tags = [
+    {
+        "name": "Health",
+        "description": "Health check endpoints for monitoring API availability.",
+    },
+    {
+        "name": "Articles",
+        "description": "Browse, filter, and retrieve news articles.",
+    },
+    {
+        "name": "Search",
+        "description": "Search news articles using keywords.",
+    },
+    {
+        "name": "Analytics",
+        "description": "Article statistics and publication analytics.",
+    },
+    {
+        "name": "Pipeline",
+        "description": "Execute and monitor the ETL pipeline.",
+    },
+    {
+        "name": "Root",
+        "description": "General API information.",
+    },
+]
 
 app = FastAPI(
     title="News Data Platform API",
     description="""
 A production-style REST API for the News Data Platform.
 
-Features:
+## Features
 
-- Browse articles
+- Browse news articles
 - Search articles
-- Analytics endpoints
-- Pipeline execution
-- Pipeline monitoring
+- Article analytics
+- Execute ETL pipelines
+- Monitor pipeline runs
 
-Built with:
+## Technology Stack
 
 - FastAPI
 - PostgreSQL
@@ -37,7 +63,9 @@ Built with:
     license_info={
         "name": "MIT",
     },
+    openapi_tags=openapi_tags,
 )
+
 register_exception_handlers(app)
 
 app.include_router(health.router)
@@ -51,8 +79,9 @@ app.include_router(pipeline.router)
     "/",
     tags=["Root"],
     summary="API Root",
+    description="Returns a welcome message indicating that the API is running.",
 )
-def root():
+def root() -> dict[str, str]:
     return {
-        "message": "News Data Platform API is running"
+        "message": "News Data Platform API is running",
     }

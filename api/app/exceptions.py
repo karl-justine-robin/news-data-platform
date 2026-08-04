@@ -1,9 +1,12 @@
+from http import HTTPStatus
+
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
-from starlette import status
+
+from api.app import schemas
 
 
-def register_exception_handlers(app: FastAPI):
+def register_exception_handlers(app: FastAPI) -> None:
 
     @app.exception_handler(HTTPException)
     async def http_exception_handler(
@@ -12,12 +15,11 @@ def register_exception_handlers(app: FastAPI):
     ):
         return JSONResponse(
             status_code=exc.status_code,
-            content={
-                "success": False,
-                "message": exc.detail,
-            },
+            content=schemas.ErrorResponse(
+                status_code=exc.status_code,
+                message=str(exc.detail),
+            ).model_dump(),
         )
-
 
     @app.exception_handler(Exception)
     async def generic_exception_handler(
@@ -25,9 +27,9 @@ def register_exception_handlers(app: FastAPI):
         exc: Exception,
     ):
         return JSONResponse(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            content={
-                "success": False,
-                "message": "An unexpected error occurred.",
-            },
+            status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+            content=schemas.ErrorResponse(
+                status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+                message="An unexpected error occurred.",
+            ).model_dump(),
         )
