@@ -32,7 +32,10 @@ class ArticleList(BaseModel):
 
 class HealthResponse(BaseModel):
     status: str
-
+    database: str
+    version: str
+    pipeline: str
+    timestamp: datetime
 
 # =====================================================
 # Analytics

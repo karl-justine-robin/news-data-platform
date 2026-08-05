@@ -1,6 +1,9 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 
 from api.app.exceptions import register_exception_handlers
+from api.app.logger import logger
 from api.app.routers import (
     analytics,
     articles,
@@ -8,6 +11,21 @@ from api.app.routers import (
     pipeline,
     search,
 )
+from api.app.middleware.request_logger import (
+    RequestLoggingMiddleware,
+)
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+
+    logger.info("API started.")
+
+    yield
+
+    logger.info("API stopped.")
+
 
 openapi_tags = [
     {
@@ -64,6 +82,7 @@ A production-style REST API for the News Data Platform.
         "name": "MIT",
     },
     openapi_tags=openapi_tags,
+    lifespan=lifespan,
 )
 
 register_exception_handlers(app)
@@ -73,6 +92,25 @@ app.include_router(articles.router)
 app.include_router(search.router)
 app.include_router(analytics.router)
 app.include_router(pipeline.router)
+
+app.add_middleware(RequestLoggingMiddleware)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "http://localhost:8501",
+        "http://127.0.0.1:8501",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+app.add_middleware(
+    GZipMiddleware,
+    minimum_size=1000,
+)
+
 
 
 @app.get(

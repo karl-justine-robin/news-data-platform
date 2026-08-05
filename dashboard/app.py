@@ -1,43 +1,82 @@
 import os
-import requests
+
 import pandas as pd
-import streamlit as st
 import plotly.express as px
+import requests
+import streamlit as st
+from dotenv import load_dotenv
 
 st.set_page_config(
     page_title="News Dashboard",
-    layout="wide"
+    layout="wide",
 )
 
 st.title("📰 News Data Platform Dashboard")
 
-API_URL = os.getenv("API_URL", "http://api:8000")
+load_dotenv()
 
-# -------------------------------------
-# Search
-# -------------------------------------
-
-search = st.text_input(
-    "🔍 Search Articles",
-    placeholder="Search by headline or body..."
+API_URL = os.getenv(
+    "API_URL",
+    "http://127.0.0.1:8000",
 )
+
+# -------------------------------------
+# Sidebar
+# -------------------------------------
+
+st.sidebar.title("⚙ Dashboard")
+
+refresh = st.sidebar.button("🔄 Refresh Dashboard")
+
+st.sidebar.markdown("---")
+
+search = st.sidebar.text_input(
+    "🔍 Search Articles",
+    placeholder="Headline or body...",
+)
+
+source_filter = st.sidebar.selectbox(
+    "📰 Source",
+    [
+        "All",
+        "Bloomberg",
+        "BusinessDesk",
+        "CNBC",
+        "Reuters",
+    ],
+)
+
+st.sidebar.markdown("---")
+
+if refresh:
+    st.rerun()
+
+# -------------------------------------
+# Articles API
+# -------------------------------------
+
+params = {
+    "page": 1,
+    "size": 100,
+    "sort": "published_at",
+    "direction": "desc",
+}
+
+if source_filter != "All":
+    params["source"] = source_filter
 
 if search:
     response = requests.get(
         f"{API_URL}/api/v1/search",
         params={"q": search},
+        timeout=10,
     )
 else:
     response = requests.get(
         f"{API_URL}/api/v1/articles",
-        params={
-            "page": 1,
-            "size": 100,
-            "sort": "published_at",
-            "direction": "desc",
-        },
+        params=params,
+        timeout=10,
     )
-
 
 if response.status_code != 200:
     st.error(f"API Error: {response.status_code}")
@@ -56,11 +95,13 @@ df = pd.DataFrame(data["items"])
 # -------------------------------------
 
 source_response = requests.get(
-    f"{API_URL}/api/v1/analytics/sources"
+    f"{API_URL}/api/v1/analytics/sources",
+    timeout=10,
 )
 
 trend_response = requests.get(
-    f"{API_URL}/api/v1/analytics/publication-trend"
+    f"{API_URL}/api/v1/analytics/publication-trend",
+    timeout=10,
 )
 
 if source_response.status_code != 200:
@@ -75,87 +116,75 @@ source_df = pd.DataFrame(source_response.json())
 trend_df = pd.DataFrame(trend_response.json())
 
 # -------------------------------------
-# KPI Cards
+# KPI Metrics
 # -------------------------------------
-
-total_articles = data["total"]
-
-source_count = (
-    df["source"].nunique()
-    if "source" in df.columns
-    else 0
-)
-
-latest_date = (
-    df["published_at"].max()
-    if "published_at" in df.columns
-    else "N/A"
-)
 
 col1, col2, col3 = st.columns(3)
 
-with col1:
-    st.metric("Articles", total_articles)
+col1.metric(
+    "Articles",
+    len(df),
+)
 
-with col2:
-    st.metric("Sources", source_count)
+col2.metric(
+    "Sources",
+    df["source"].nunique(),
+)
 
-with col3:
-    st.metric("Latest Date", latest_date)
+col3.metric(
+    "Publication Dates",
+    df["published_at"].nunique(),
+)
 
 st.divider()
 
 # -------------------------------------
-# Articles by Source
+# Charts
 # -------------------------------------
 
-if not source_df.empty:
+left, right = st.columns(2)
+
+with left:
+
+    st.subheader("Articles by Source")
 
     fig = px.bar(
         source_df,
         x="source",
         y="count",
-        title="Articles by Source",
     )
 
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(
+        fig,
+        use_container_width=True,
+    )
 
-# -------------------------------------
-# Articles by Date
-# -------------------------------------
+with right:
 
-if not trend_df.empty:
+    st.subheader("Publication Trend")
 
-    fig2 = px.line(
+    fig = px.line(
         trend_df,
         x="published_at",
         y="count",
         markers=True,
-        title="Articles by Publication Date",
     )
 
-    st.plotly_chart(fig2, use_container_width=True)
+    st.plotly_chart(
+        fig,
+        use_container_width=True,
+    )
+
+st.divider()
 
 # -------------------------------------
-# Latest Articles
+# Articles Table
 # -------------------------------------
 
-st.subheader("Latest Articles")
-
-display_columns = [
-    "headline",
-    "source",
-    "published_at",
-    "loaded_at",
-]
-
-available_columns = [
-    c for c in display_columns
-    if c in df.columns
-]
+st.subheader("Articles")
 
 st.dataframe(
-    df[available_columns],
+    df,
     use_container_width=True,
     hide_index=True,
 )
