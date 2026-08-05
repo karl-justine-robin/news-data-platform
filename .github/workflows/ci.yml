@@ -13,7 +13,6 @@ on:
 
 jobs:
   test:
-
     runs-on: ubuntu-latest
 
     services:
@@ -45,7 +44,6 @@ jobs:
       LOG_LEVEL: INFO
 
     steps:
-
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -59,6 +57,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e .
           pip install -r requirements.txt
+
+      - name: Create database tables
+        run: |
+          python create_tables.py
 
       - name: Run tests
         run: |
