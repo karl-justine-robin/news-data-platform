@@ -6,12 +6,22 @@ from sqlalchemy import (
     Integer,
     String,
     Text,
+    UniqueConstraint,
 )
 
 from src.database.database import Base
 
 class Article(Base):
     __tablename__ = "articles"
+
+    __table_args__ = (
+        UniqueConstraint(
+            "headline",
+            "published_at",
+            "source",
+            name="uq_articles_headline_date_source",
+        ),
+    )
 
     id = Column(Integer, primary_key=True, index=True)
     headline = Column(Text, nullable=False)
