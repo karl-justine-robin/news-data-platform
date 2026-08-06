@@ -62,6 +62,10 @@ jobs:
         run: |
           python api/create_tables.py
 
+      - name: Show articles table schema
+        run: |
+          PGPASSWORD=postgres psql -h localhost -U postgres -d newsdb -c "\d articles"
+
       - name: Run tests
         run: |
           pytest
