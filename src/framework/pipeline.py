@@ -5,6 +5,7 @@ from src.framework.error.exceptions import PipelineException
 from src.framework.loader.loader import Loader
 from src.framework.logging.logger import logger
 from src.framework.preprocessor.preprocessor import Preprocessor
+from src.framework.quality.quality_service import QualityService
 from src.framework.schema.schema_validator import SchemaValidator
 from src.framework.tracker.run_tracker import RunTracker
 from src.framework.transformer.transformer import Transformer
@@ -21,8 +22,10 @@ class Pipeline:
         self.validator = Validator()
         self.loader = Loader()
         self.tracker = RunTracker()
+        self.quality_service = QualityService()
 
     def run(self):
+
         start_time = perf_counter()
 
         logger.info("Starting pipeline...")
@@ -30,6 +33,7 @@ class Pipeline:
         run_id = self.tracker.start()
 
         try:
+
             feed = self.collector.collect()
 
             self.schema_validator.validate(feed)
@@ -42,13 +46,23 @@ class Pipeline:
                 preprocessed_feed
             )
 
-            validated_articles = self.validator.validate(
+            validation_result = self.validator.validate(
                 transformed_articles
             )
 
-            self.loader.load(validated_articles)
+            self.loader.load(
+                validation_result.valid_articles
+            )
 
-            records = len(validated_articles)
+            logger.info(
+                self.quality_service.generate_report(
+                    validation_result.metrics
+                )
+            )
+
+            records = len(
+                validation_result.valid_articles
+            )
 
             logger.info(
                 "Processed %d standardized article(s).",

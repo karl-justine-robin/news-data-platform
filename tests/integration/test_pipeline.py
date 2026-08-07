@@ -32,6 +32,11 @@ def test_pipeline_integration():
     assert len(articles) == 30
 
     # Validate business rules
-    validated_articles = validator.validate(articles)
+    validation_result = validator.validate(articles)
 
-    assert len(validated_articles) == 30
+    assert len(validation_result.valid_articles) == 30
+    assert len(validation_result.invalid_articles) == 0
+
+    assert validation_result.metrics.total_records == 30
+    assert validation_result.metrics.valid_records == 30
+    assert validation_result.metrics.invalid_records == 0

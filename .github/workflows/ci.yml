@@ -62,9 +62,16 @@ jobs:
         run: |
           python api/create_tables.py
 
-      - name: Show articles table schema
+      - name: Install PostgreSQL client
         run: |
-          PGPASSWORD=postgres psql -h localhost -U postgres -d newsdb -c "\d articles"
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+
+      - name: Show articles table schema
+        env:
+          PGPASSWORD: postgres
+        run: |
+          psql -h localhost -U postgres -d newsdb -c "\d articles"
 
       - name: Run tests
         run: |

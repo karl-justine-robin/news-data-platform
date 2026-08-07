@@ -14,9 +14,14 @@ def test_valid_article():
         }
     ]
 
-    validated = validator.validate(articles)
+    result = validator.validate(articles)
 
-    assert len(validated) == 1
+    assert len(result.valid_articles) == 1
+    assert len(result.invalid_articles) == 0
+
+    assert result.metrics.total_records == 1
+    assert result.metrics.valid_records == 1
+    assert result.metrics.invalid_records == 0
 
 
 def test_missing_headline():
@@ -32,9 +37,15 @@ def test_missing_headline():
         }
     ]
 
-    validated = validator.validate(articles)
+    result = validator.validate(articles)
 
-    assert validated == []
+    assert result.valid_articles == []
+    assert len(result.invalid_articles) == 1
+
+    assert result.metrics.total_records == 1
+    assert result.metrics.valid_records == 0
+    assert result.metrics.invalid_records == 1
+    assert result.metrics.missing_headline == 1
 
 
 def test_missing_body():
@@ -50,9 +61,15 @@ def test_missing_body():
         }
     ]
 
-    validated = validator.validate(articles)
+    result = validator.validate(articles)
 
-    assert validated == []
+    assert result.valid_articles == []
+    assert len(result.invalid_articles) == 1
+
+    assert result.metrics.total_records == 1
+    assert result.metrics.valid_records == 0
+    assert result.metrics.invalid_records == 1
+    assert result.metrics.missing_body == 1
 
 
 def test_missing_publish_date():
@@ -68,9 +85,15 @@ def test_missing_publish_date():
         }
     ]
 
-    validated = validator.validate(articles)
+    result = validator.validate(articles)
 
-    assert validated == []
+    assert result.valid_articles == []
+    assert len(result.invalid_articles) == 1
+
+    assert result.metrics.total_records == 1
+    assert result.metrics.valid_records == 0
+    assert result.metrics.invalid_records == 1
+    assert result.metrics.invalid_date == 1
 
 
 def test_mixed_articles():
@@ -98,7 +121,12 @@ def test_mixed_articles():
         },
     ]
 
-    validated = validator.validate(articles)
+    result = validator.validate(articles)
 
-    assert len(validated) == 2
+    assert len(result.valid_articles) == 2
+    assert len(result.invalid_articles) == 1
 
+    assert result.metrics.total_records == 3
+    assert result.metrics.valid_records == 2
+    assert result.metrics.invalid_records == 1
+    assert result.metrics.missing_headline == 1

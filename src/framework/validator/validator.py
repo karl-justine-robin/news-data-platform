@@ -1,30 +1,39 @@
 from src.framework.logging.logger import logger
+from src.framework.validator.validation_result import (
+    ValidationResult,
+)
 
 
 class Validator:
 
     def validate(self, articles):
+
         logger.info("Validating articles...")
 
-        valid_articles = []
-        rejected_count = 0
+        result = ValidationResult()
 
         for article in articles:
 
             reason = None
 
+            result.metrics.total_records += 1
+
             if not article.get("headline"):
                 reason = "Missing headline"
+                result.metrics.missing_headline += 1
 
             elif not article.get("body"):
                 reason = "Missing body"
+                result.metrics.missing_body += 1
 
             elif not article.get("published_at"):
                 reason = "Missing published_at"
+                result.metrics.invalid_date += 1
 
             if reason:
 
-                rejected_count += 1
+                result.invalid_articles.append(article)
+                result.metrics.invalid_records += 1
 
                 logger.warning(
                     "Rejected article | Source: %s | Headline: %s | Reason: %s",
@@ -35,16 +44,17 @@ class Validator:
 
                 continue
 
-            valid_articles.append(article)
+            result.valid_articles.append(article)
+            result.metrics.valid_records += 1
 
         logger.info(
             "Validated %d article(s).",
-            len(valid_articles),
+            result.metrics.valid_records,
         )
 
         logger.info(
             "Rejected %d article(s).",
-            rejected_count,
+            result.metrics.invalid_records,
         )
 
-        return valid_articles
+        return result
