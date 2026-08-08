@@ -1,0 +1,36 @@
+{
+    "feed_date": "2026-07-30",
+    "timezone": "America/New_York",
+    "vendor": "CNBC",
+    "items": [
+        {
+            "title": "AI startups continue attracting venture capital",
+            "publish_date": "2026-07-30",
+            "content": "Artificial intelligence startups secured new funding rounds from major investors.",
+            "source": "CNBC",
+            "category": "Technology"
+        },
+        {
+            "title": "Retail companies prepare for holiday demand",
+            "publish_date": "2026-07-29",
+            "content": "Retailers expanded inventories ahead of expected increases in consumer spending.",
+            "source": "CNBC",
+            "category": "Retail"
+        },
+        {
+            "title": "Electric vehicle market expands globally",
+            "publish_date": "2026-07-28",
+            "content": "Manufacturers reported continued growth in electric vehicle deliveries across multiple regions.",
+            "source": "CNBC",
+            "category": "Industry"
+        },
+        {
+            "title": "Cloud computing drives enterprise technology spending",
+            "publish_date": "2026-07-27",
+            "content": "Organizations continued migrating workloads to cloud platforms to improve scalability.",
+            "source": "CNBC",
+            "category": "Technology"
+        }
+    ],
+    "source": "CNBC"
+}

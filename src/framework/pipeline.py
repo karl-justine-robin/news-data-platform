@@ -4,6 +4,9 @@ from src.framework.collector.collector import Collector
 from src.framework.error.exceptions import PipelineException
 from src.framework.loader.loader import Loader
 from src.framework.logging.logger import logger
+from src.framework.medallion.bronze_writer import BronzeWriter
+from src.framework.medallion.gold_writer import GoldWriter
+from src.framework.medallion.silver_writer import SilverWriter
 from src.framework.preprocessor.preprocessor import Preprocessor
 from src.framework.quality.quality_service import QualityService
 from src.framework.schema.schema_validator import SchemaValidator
@@ -24,6 +27,10 @@ class Pipeline:
         self.tracker = RunTracker()
         self.quality_service = QualityService()
 
+        self.bronze_writer = BronzeWriter()
+        self.silver_writer = SilverWriter()
+        self.gold_writer = GoldWriter()
+
     def run(self):
 
         start_time = perf_counter()
@@ -36,19 +43,64 @@ class Pipeline:
 
             feed = self.collector.collect()
 
-            self.schema_validator.validate(feed)
-
-            preprocessed_feed = self.preprocessor.preprocess(
+            bronze_timestamp = self.bronze_writer.write(
                 feed
             )
 
-            transformed_articles = self.transformer.transform(
-                preprocessed_feed
+            logger.info(
+                "Bronze layer written at %s.",
+                bronze_timestamp,
             )
 
-            validation_result = self.validator.validate(
-                transformed_articles
+            self.schema_validator.validate(
+                feed
             )
+
+            preprocessed_feed = (
+                self.preprocessor.preprocess(
+                    feed
+                )
+            )
+
+            transformed_articles = (
+                self.transformer.transform(
+                    preprocessed_feed
+                )
+            )
+
+            validation_result = (
+                self.validator.validate(
+                    transformed_articles
+                )
+            )
+
+            silver_file = (
+                self.silver_writer.write(
+                    validation_result.valid_articles,
+                    bronze_timestamp,
+                )
+            )
+
+            logger.info(
+                "Silver layer written to %s.",
+                silver_file,
+            )
+
+            gold_files = self.gold_writer.write(
+                validation_result.valid_articles,
+                validation_result.metrics,
+                bronze_timestamp,
+            )
+
+            logger.info(
+                "Gold datasets created:"
+            )
+
+            for gold_file in gold_files:
+                logger.info(
+                    "  %s",
+                    gold_file,
+                )
 
             self.loader.load(
                 validation_result.valid_articles
@@ -105,6 +157,7 @@ class Pipeline:
         elapsed = perf_counter() - start_time
 
         logger.info("Pipeline finished.")
+
         logger.info(
             "Execution time: %.2f seconds.",
             elapsed,

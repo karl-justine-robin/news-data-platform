@@ -1,0 +1,182 @@
+[
+    {
+        "headline": "Wall Street closes higher as technology shares rally",
+        "published_at": "2026-07-30",
+        "body": "Technology companies led gains after reporting stronger-than-expected quarterly results.",
+        "source": "Bloomberg"
+    },
+    {
+        "headline": "Corporate mergers increase across financial sector",
+        "published_at": "2026-07-29",
+        "body": "Investment firms announced several acquisition deals aimed at expanding market share.",
+        "source": "Bloomberg"
+    },
+    {
+        "headline": "Housing market stabilizes despite borrowing costs",
+        "published_at": "2026-07-28",
+        "body": "Home prices remained stable as buyers adjusted to current mortgage rates.",
+        "source": "Bloomberg"
+    },
+    {
+        "headline": "Artificial intelligence spending reaches record levels",
+        "published_at": "2026-07-27",
+        "body": "Businesses increased investment in AI infrastructure and automation platforms.",
+        "source": "Bloomberg"
+    },
+    {
+        "headline": "Consumer spending supports economic growth",
+        "published_at": "2026-07-26",
+        "body": "Retail purchases remained resilient despite inflationary pressures.",
+        "source": "Bloomberg"
+    },
+    {
+        "headline": "Renewable energy companies attract investors",
+        "published_at": "2026-07-25",
+        "body": "Green energy projects continued receiving strong institutional investment.",
+        "source": "Bloomberg"
+    },
+    {
+        "headline": "NZX closes higher as banking stocks gain",
+        "published_at": "2026-07-30",
+        "body": "New Zealand banking stocks led the market higher after stronger-than-expected quarterly earnings from major financial institutions.",
+        "source": "BusinessDesk"
+    },
+    {
+        "headline": "Business confidence improves for fourth consecutive month",
+        "published_at": "2026-07-30",
+        "body": "A nationwide survey showed business confidence continuing to recover as firms reported stronger sales expectations.",
+        "source": "BusinessDesk"
+    },
+    {
+        "headline": "Retail spending increases during winter sales",
+        "published_at": "2026-07-29",
+        "body": "Retailers reported stronger customer traffic as seasonal promotions boosted consumer spending across major cities.",
+        "source": "BusinessDesk"
+    },
+    {
+        "headline": "Kiwi technology startups attract fresh investment",
+        "published_at": "2026-07-29",
+        "body": "Several New Zealand technology startups secured funding to expand artificial intelligence and cloud-based services.",
+        "source": "BusinessDesk"
+    },
+    {
+        "headline": "Construction sector records modest growth",
+        "published_at": "2026-07-28",
+        "body": "Infrastructure projects supported construction activity despite higher material costs and labour shortages.",
+        "source": "BusinessDesk"
+    },
+    {
+        "headline": "Renewable energy projects receive government support",
+        "published_at": "2026-07-28",
+        "body": "Additional funding was announced for wind and solar energy developments to improve long-term energy security.",
+        "source": "BusinessDesk"
+    },
+    {
+        "headline": "Export demand strengthens dairy industry outlook",
+        "published_at": "2026-07-27",
+        "body": "Strong overseas demand for dairy products improved export expectations for the remainder of the year.",
+        "source": "BusinessDesk"
+    },
+    {
+        "headline": "Commercial property market shows signs of recovery",
+        "published_at": "2026-07-27",
+        "body": "Office occupancy rates increased as businesses gradually expanded operations in major business districts.",
+        "source": "BusinessDesk"
+    },
+    {
+        "headline": "Healthcare providers increase digital investments",
+        "published_at": "2026-07-26",
+        "body": "Hospitals and clinics accelerated digital transformation projects to improve patient services and operational efficiency.",
+        "source": "BusinessDesk"
+    },
+    {
+        "headline": "Food manufacturers expand production capacity",
+        "published_at": "2026-07-26",
+        "body": "Manufacturers announced new production lines to meet growing domestic and international demand.",
+        "source": "BusinessDesk"
+    },
+    {
+        "headline": "Small businesses adopt AI tools to improve productivity",
+        "published_at": "2026-07-25",
+        "body": "Local businesses are increasingly using AI-powered software to automate administrative tasks and customer support.",
+        "source": "BusinessDesk"
+    },
+    {
+        "headline": "Inflation continues to ease as fuel prices decline",
+        "published_at": "2026-07-25",
+        "body": "Lower transportation and energy costs contributed to a slower pace of inflation during the latest reporting period.",
+        "source": "BusinessDesk"
+    },
+    {
+        "headline": "AI startups continue attracting venture capital",
+        "published_at": "2026-07-30",
+        "body": "Artificial intelligence startups secured new funding rounds from major investors.",
+        "source": "CNBC"
+    },
+    {
+        "headline": "Retail companies prepare for holiday demand",
+        "published_at": "2026-07-29",
+        "body": "Retailers expanded inventories ahead of expected increases in consumer spending.",
+        "source": "CNBC"
+    },
+    {
+        "headline": "Electric vehicle market expands globally",
+        "published_at": "2026-07-28",
+        "body": "Manufacturers reported continued growth in electric vehicle deliveries across multiple regions.",
+        "source": "CNBC"
+    },
+    {
+        "headline": "Cloud computing drives enterprise technology spending",
+        "published_at": "2026-07-27",
+        "body": "Organizations continued migrating workloads to cloud platforms to improve scalability.",
+        "source": "CNBC"
+    },
+    {
+        "headline": "Global stocks advance after central bank signals stability",
+        "published_at": "2026-07-30",
+        "body": "Equity markets gained after policymakers indicated that interest rates would likely remain unchanged.",
+        "source": "Reuters"
+    },
+    {
+        "headline": "Oil prices climb on supply concerns",
+        "published_at": "2026-07-29",
+        "body": "Crude oil prices rose following reports of reduced production from several exporting nations.",
+        "source": "Reuters"
+    },
+    {
+        "headline": "European inflation slows in latest report",
+        "published_at": "2026-07-29",
+        "body": "Consumer price growth eased across the eurozone as energy costs declined.",
+        "source": "Reuters"
+    },
+    {
+        "headline": "Major bank reports stronger quarterly profit",
+        "published_at": "2026-07-28",
+        "body": "Improved lending activity and lower operating costs boosted quarterly earnings.",
+        "source": "Reuters"
+    },
+    {
+        "headline": "Semiconductor demand remains strong",
+        "published_at": "2026-07-27",
+        "body": "Global demand for AI chips continued to drive semiconductor production.",
+        "source": "Reuters"
+    },
+    {
+        "headline": "Shipping costs continue to decline",
+        "published_at": "2026-07-27",
+        "body": "Lower freight rates reduced logistics expenses for international businesses.",
+        "source": "Reuters"
+    },
+    {
+        "headline": "Airline industry records increase in passenger traffic",
+        "published_at": "2026-07-26",
+        "body": "Travel demand remained strong during the summer holiday season.",
+        "source": "Reuters"
+    },
+    {
+        "headline": "Gold prices remain steady amid market uncertainty",
+        "published_at": "2026-07-25",
+        "body": "Investors maintained positions in precious metals while monitoring economic data.",
+        "source": "Reuters"
+    }
+]
