@@ -1,24 +1,67 @@
-# Virtual environment
-.venv/
-
+# ==========================================
 # Python
+# ==========================================
+
 __pycache__/
 *.py[cod]
 *.pyo
+*.pyd
+*.so
+*.egg-info/
 
-# Environment variables
-.env
+# ==========================================
+# Virtual Environment
+# ==========================================
 
-# Logs
-logs/
-*.log
+.venv/
+venv/
+env/
 
+# ==========================================
+# Pytest
+# ==========================================
+
+.pytest_cache/
+.coverage
+htmlcov/
+
+# ==========================================
 # IDE
+# ==========================================
+
 .vscode/
 .idea/
 
-# macOS
-.DS_Store
+# ==========================================
+# Environment Variables
+# ==========================================
 
-# Python packaging
-*.egg-info/
+.env
+
+# ==========================================
+# Logs
+# ==========================================
+
+logs/
+*.log
+
+# ==========================================
+# Generated Pipeline Data
+# ==========================================
+
+data/bronze/**
+data/silver/**
+data/gold/**
+data/watermarks.json
+
+# Keep folder structure
+!data/bronze/.gitkeep
+!data/silver/.gitkeep
+!data/gold/.gitkeep
+
+# ==========================================
+# OS Files
+# ==========================================
+
+.DS_Store
+Thumbs.db

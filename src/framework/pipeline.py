@@ -2,6 +2,12 @@ from time import perf_counter
 
 from src.framework.collector.collector import Collector
 from src.framework.error.exceptions import PipelineException
+from src.framework.incremental.incremental_filter import (
+    IncrementalFilter,
+)
+from src.framework.incremental.watermark_service import (
+    WatermarkService,
+)
 from src.framework.loader.loader import Loader
 from src.framework.logging.logger import logger
 from src.framework.medallion.bronze_writer import BronzeWriter
@@ -30,6 +36,9 @@ class Pipeline:
         self.bronze_writer = BronzeWriter()
         self.silver_writer = SilverWriter()
         self.gold_writer = GoldWriter()
+
+        self.incremental_filter = IncrementalFilter()
+        self.watermark_service = WatermarkService()
 
     def run(self):
 
@@ -68,9 +77,15 @@ class Pipeline:
                 )
             )
 
+            incremental_result = (
+                self.incremental_filter.filter(
+                    transformed_articles
+                )
+            )
+
             validation_result = (
                 self.validator.validate(
-                    transformed_articles
+                    incremental_result.new_articles
                 )
             )
 
@@ -104,6 +119,17 @@ class Pipeline:
 
             self.loader.load(
                 validation_result.valid_articles
+            )
+
+            self.watermark_service.update_many(
+                incremental_result.latest_watermarks
+            )
+
+            logger.info(
+                "Updated %d watermark(s).",
+                len(
+                    incremental_result.latest_watermarks
+                ),
             )
 
             logger.info(
