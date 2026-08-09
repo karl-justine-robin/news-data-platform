@@ -1,6 +1,6 @@
 from datetime import date, datetime
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 # =====================================================
@@ -15,8 +15,9 @@ class Article(BaseModel):
     source: str
     loaded_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(
+        from_attributes=True
+    )
 
 
 class ArticleList(BaseModel):
@@ -50,6 +51,27 @@ class PublicationTrend(BaseModel):
     published_at: date
     count: int
 
+class WarehouseSourceAnalytics(BaseModel):
+    source: str
+    article_count: int
+
+
+class WarehouseDateAnalytics(BaseModel):
+    date: date
+    article_count: int
+
+
+class WarehouseMonthAnalytics(BaseModel):
+    year: int
+    month: int
+    month_name: str
+    article_count: int
+
+
+class WarehouseDayAnalytics(BaseModel):
+    day_of_week: str
+    article_count: int
+
 
 # =====================================================
 # Pipeline
@@ -68,8 +90,9 @@ class PipelineRun(BaseModel):
 
     error_message: str | None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(
+        from_attributes=True
+    )
 
 
 class PipelineStats(BaseModel):
