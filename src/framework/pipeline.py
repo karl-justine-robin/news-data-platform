@@ -20,6 +20,13 @@ from src.framework.tracker.run_tracker import RunTracker
 from src.framework.transformer.transformer import Transformer
 from src.framework.validator.validator import Validator
 
+from src.framework.warehouse.dimension_loader import (
+    DimensionLoader,
+)
+from src.framework.warehouse.fact_loader import (
+    FactLoader,
+)
+
 
 class Pipeline:
 
@@ -39,6 +46,10 @@ class Pipeline:
 
         self.incremental_filter = IncrementalFilter()
         self.watermark_service = WatermarkService()
+
+        self.dimension_loader = DimensionLoader()
+        self.fact_loader = FactLoader()
+
 
     def run(self):
 
@@ -89,6 +100,25 @@ class Pipeline:
                 )
             )
 
+            sources = {
+                article["source"]
+                for article in validation_result.valid_articles
+            }
+
+            dates = {
+                article["published_at"]
+                for article in validation_result.valid_articles
+            }
+
+            self.dimension_loader.load_sources(
+                sources
+            )
+
+            self.dimension_loader.load_dates(
+                dates
+            )
+
+
             silver_file = (
                 self.silver_writer.write(
                     validation_result.valid_articles,
@@ -118,6 +148,10 @@ class Pipeline:
                 )
 
             self.loader.load(
+                validation_result.valid_articles
+            )
+
+            self.fact_loader.load_articles(
                 validation_result.valid_articles
             )
 
