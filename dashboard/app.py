@@ -202,6 +202,26 @@ except requests.RequestException as error:
 
 
 # -------------------------------------
+# Data Quality API
+# -------------------------------------
+
+try:
+
+    quality_data = (
+        api_client
+        .get_latest_quality()
+    )
+
+except requests.RequestException as error:
+
+    st.error(
+        f"Unable to load data quality metrics: {error}"
+    )
+
+    st.stop()
+
+
+# -------------------------------------
 # KPI Metrics
 # -------------------------------------
 
@@ -533,6 +553,133 @@ else:
         "No pipeline run history available."
     )
 
+
+st.divider()
+
+
+# -------------------------------------
+# Data Quality
+# -------------------------------------
+
+st.subheader(
+    "🛡 Data Quality"
+)
+
+quality_col1, quality_col2, quality_col3, quality_col4 = (
+    st.columns(4)
+)
+
+
+quality_col1.metric(
+    "Quality Score",
+    f'{quality_data["quality_score"]:.2f}%',
+)
+
+
+quality_col2.metric(
+    "Valid Records",
+    quality_data["valid_records"],
+)
+
+
+quality_col3.metric(
+    "Invalid Records",
+    quality_data["invalid_records"],
+)
+
+
+quality_col4.metric(
+    "Total Records",
+    quality_data["total_records"],
+)
+
+
+st.subheader(
+    "Validation Failures"
+)
+
+
+failure_col1, failure_col2, failure_col3, failure_col4 = (
+    st.columns(4)
+)
+
+
+failure_col1.metric(
+    "Missing Headlines",
+    quality_data["missing_headline"],
+)
+
+
+failure_col2.metric(
+    "Missing Bodies",
+    quality_data["missing_body"],
+)
+
+
+failure_col3.metric(
+    "Missing Sources",
+    quality_data["missing_source"],
+)
+
+
+failure_col4.metric(
+    "Invalid Dates",
+    quality_data["invalid_date"],
+)
+
+
+st.subheader("🛡 Data Quality")
+
+quality_col1, quality_col2, quality_col3, quality_col4 = (
+    st.columns(4)
+)
+
+quality_col1.metric(
+    "Quality Score",
+    f'{quality_data["quality_score"]:.2f}%',
+)
+
+quality_col2.metric(
+    "Valid Records",
+    quality_data["valid_records"],
+)
+
+quality_col3.metric(
+    "Invalid Records",
+    quality_data["invalid_records"],
+)
+
+quality_col4.metric(
+    "Total Records",
+    quality_data["total_records"],
+)
+
+
+st.subheader("Validation Failures")
+
+failure_col1, failure_col2, failure_col3, failure_col4 = (
+    st.columns(4)
+)
+
+failure_col1.metric(
+    "Missing Headlines",
+    quality_data["missing_headline"],
+)
+
+failure_col2.metric(
+    "Missing Bodies",
+    quality_data["missing_body"],
+)
+
+failure_col3.metric(
+    "Missing Sources",
+    quality_data["missing_source"],
+)
+
+failure_col4.metric(
+    "Invalid Dates",
+    quality_data["invalid_date"],
+)
 
 st.divider()
 

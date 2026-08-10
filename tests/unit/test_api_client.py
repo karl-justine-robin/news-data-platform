@@ -236,3 +236,39 @@ def test_get_pipeline_runs():
         "http://127.0.0.1:8000/api/v1/pipeline/runs",
         timeout=10,
     )
+
+
+def test_get_latest_quality():
+
+    client = APIClient(
+        "http://127.0.0.1:8000"
+    )
+
+    mock_response = Mock()
+
+    mock_response.json.return_value = {
+        "total_records": 30,
+        "valid_records": 30,
+        "invalid_records": 0,
+        "missing_headline": 0,
+        "missing_body": 0,
+        "missing_source": 0,
+        "invalid_date": 0,
+        "quality_score": 100.0,
+    }
+
+    mock_response.raise_for_status.return_value = None
+
+    with patch(
+        "dashboard.api_client.requests.get",
+        return_value=mock_response,
+    ) as mock_get:
+
+        result = client.get_latest_quality()
+
+    assert result["quality_score"] == 100.0
+
+    mock_get.assert_called_once_with(
+        "http://127.0.0.1:8000/api/v1/quality/latest",
+        timeout=10,
+    )

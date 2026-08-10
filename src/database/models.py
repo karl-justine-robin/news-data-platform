@@ -217,3 +217,58 @@ class FactArticle(Base):
         DateTime,
         nullable=False,
     )
+
+
+class QualityRun(Base):
+    __tablename__ = "quality_runs"
+
+    id = Column(
+        Integer,
+        primary_key=True,
+        index=True,
+    )
+
+    total_records = Column(
+        Integer,
+        nullable=False,
+    )
+
+    valid_records = Column(
+        Integer,
+        nullable=False,
+    )
+
+    invalid_records = Column(
+        Integer,
+        nullable=False,
+    )
+
+    missing_headline = Column(
+        Integer,
+        nullable=False,
+    )
+
+    missing_body = Column(
+        Integer,
+        nullable=False,
+    )
+
+    missing_source = Column(
+        Integer,
+        nullable=False,
+    )
+
+    invalid_date = Column(
+        Integer,
+        nullable=False,
+    )
+
+    quality_score = Column(
+        Float,
+        nullable=False,
+    )
+
+    created_at = Column(
+        DateTime,
+        nullable=False,
+    )

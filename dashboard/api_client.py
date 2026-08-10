@@ -123,3 +123,16 @@ class APIClient:
         response.raise_for_status()
 
         return response.json()
+
+
+
+    def get_latest_quality(self):
+
+        response = requests.get(
+            f"{self.base_url}/api/v1/quality/latest",
+            timeout=self.timeout,
+        )
+
+        response.raise_for_status()
+
+        return response.json()

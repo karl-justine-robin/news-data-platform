@@ -117,3 +117,20 @@ class ErrorResponse(BaseModel):
     success: bool = False
     status_code: int
     message: str
+
+
+# =====================================================
+# Quality
+# =====================================================
+
+class QualityMetricsResponse(BaseModel):
+    total_records: int
+    valid_records: int
+    invalid_records: int
+
+    missing_headline: int
+    missing_body: int
+    missing_source: int
+    invalid_date: int
+
+    quality_score: float

@@ -9,8 +9,10 @@ from api.app.routers import (
     articles,
     health,
     pipeline,
+    quality,
     search,
 )
+
 from api.app.middleware.request_logger import (
     RequestLoggingMiddleware,
 )
@@ -28,6 +30,10 @@ async def lifespan(app: FastAPI):
 
 
 openapi_tags = [
+    {
+    "name": "Quality",
+    "description": "Data quality metrics and validation results.",
+    },
     {
         "name": "Health",
         "description": "Health check endpoints for monitoring API availability.",
@@ -92,7 +98,7 @@ app.include_router(articles.router)
 app.include_router(search.router)
 app.include_router(analytics.router)
 app.include_router(pipeline.router)
-
+app.include_router(quality.router)
 app.add_middleware(RequestLoggingMiddleware)
 app.add_middleware(
     CORSMiddleware,
@@ -110,6 +116,7 @@ app.add_middleware(
     GZipMiddleware,
     minimum_size=1000,
 )
+
 
 
 
