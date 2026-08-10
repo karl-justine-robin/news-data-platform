@@ -4,7 +4,11 @@ import pandas as pd
 import plotly.express as px
 import requests
 import streamlit as st
+
 from dotenv import load_dotenv
+
+from dashboard.api_client import APIClient
+
 
 st.set_page_config(
     page_title="News Dashboard",
@@ -15,10 +19,14 @@ st.title("📰 News Data Platform Dashboard")
 
 load_dotenv()
 
+
 API_URL = os.getenv(
     "API_URL",
     "http://127.0.0.1:8000",
 )
+
+api_client = APIClient(API_URL)
+
 
 # -------------------------------------
 # Sidebar
@@ -26,7 +34,9 @@ API_URL = os.getenv(
 
 st.sidebar.title("⚙ Dashboard")
 
-refresh = st.sidebar.button("🔄 Refresh Dashboard")
+refresh = st.sidebar.button(
+    "🔄 Refresh Dashboard"
+)
 
 st.sidebar.markdown("---")
 
@@ -48,8 +58,10 @@ source_filter = st.sidebar.selectbox(
 
 st.sidebar.markdown("---")
 
+
 if refresh:
     st.rerun()
+
 
 # -------------------------------------
 # Articles API
@@ -62,112 +74,247 @@ params = {
     "direction": "desc",
 }
 
+
 if source_filter != "All":
     params["source"] = source_filter
 
-if search:
-    response = requests.get(
-        f"{API_URL}/api/v1/search",
-        params={"q": search},
-        timeout=10,
-    )
-else:
-    response = requests.get(
-        f"{API_URL}/api/v1/articles",
-        params=params,
-        timeout=10,
+
+try:
+
+    if search:
+
+        data = api_client.search_articles(
+            search
+        )
+
+    else:
+
+        data = api_client.get_articles(
+            params
+        )
+
+except requests.RequestException as error:
+
+    st.error(
+        f"Unable to connect to API: {error}"
     )
 
-if response.status_code != 200:
-    st.error(f"API Error: {response.status_code}")
     st.stop()
 
-data = response.json()
 
-if len(data["items"]) == 0:
-    st.warning("No articles found.")
-    st.stop()
-
-df = pd.DataFrame(data["items"])
-
-# -------------------------------------
-# Analytics API
-# -------------------------------------
-
-source_response = requests.get(
-    f"{API_URL}/api/v1/analytics/sources",
-    timeout=10,
+articles = data.get(
+    "items",
+    [],
 )
 
-trend_response = requests.get(
-    f"{API_URL}/api/v1/analytics/publication-trend",
-    timeout=10,
+
+if not articles:
+
+    st.warning(
+        "No articles found."
+    )
+
+    st.stop()
+
+
+df = pd.DataFrame(articles)
+
+
+# -------------------------------------
+# Warehouse Analytics API
+# -------------------------------------
+
+try:
+
+    source_data = (
+        api_client
+        .get_warehouse_sources()
+    )
+
+    date_data = (
+        api_client
+        .get_warehouse_dates()
+    )
+
+    month_data = (
+        api_client
+        .get_warehouse_months()
+    )
+
+    day_data = (
+        api_client
+        .get_warehouse_days_of_week()
+    )
+
+except requests.RequestException as error:
+
+    st.error(
+        f"Unable to load warehouse analytics: {error}"
+    )
+
+    st.stop()
+
+
+source_df = pd.DataFrame(
+    source_data
 )
 
-if source_response.status_code != 200:
-    st.error("Failed to load source analytics.")
-    st.stop()
+date_df = pd.DataFrame(
+    date_data
+)
 
-if trend_response.status_code != 200:
-    st.error("Failed to load publication trend.")
-    st.stop()
+month_df = pd.DataFrame(
+    month_data
+)
 
-source_df = pd.DataFrame(source_response.json())
-trend_df = pd.DataFrame(trend_response.json())
+day_df = pd.DataFrame(
+    day_data
+)
+
 
 # -------------------------------------
 # KPI Metrics
 # -------------------------------------
 
+total_articles = (
+    source_df["article_count"].sum()
+    if not source_df.empty
+    else 0
+)
+
+total_sources = (
+    source_df["source"].nunique()
+    if not source_df.empty
+    else 0
+)
+
+total_dates = (
+    date_df["date"].nunique()
+    if not date_df.empty
+    else 0
+)
+
+
 col1, col2, col3 = st.columns(3)
+
 
 col1.metric(
     "Articles",
-    len(df),
+    int(total_articles),
 )
+
 
 col2.metric(
     "Sources",
-    df["source"].nunique(),
+    int(total_sources),
 )
+
 
 col3.metric(
     "Publication Dates",
-    df["published_at"].nunique(),
+    int(total_dates),
 )
+
 
 st.divider()
 
+
 # -------------------------------------
-# Charts
+# Articles by Source
 # -------------------------------------
 
 left, right = st.columns(2)
 
+
 with left:
 
-    st.subheader("Articles by Source")
+    st.subheader(
+        "Articles by Source"
+    )
 
     fig = px.bar(
         source_df,
         x="source",
-        y="count",
+        y="article_count",
+        labels={
+            "source": "Source",
+            "article_count": "Articles",
+        },
     )
 
     st.plotly_chart(
         fig,
         use_container_width=True,
     )
+
+
+# -------------------------------------
+# Articles by Date
+# -------------------------------------
 
 with right:
 
-    st.subheader("Publication Trend")
+    st.subheader(
+        "Publication Trend"
+    )
 
-    fig = px.line(
-        trend_df,
-        x="published_at",
-        y="count",
-        markers=True,
+    if not date_df.empty:
+
+        date_df["date"] = pd.to_datetime(
+            date_df["date"]
+        )
+
+        fig = px.line(
+            date_df,
+            x="date",
+            y="article_count",
+            markers=True,
+            labels={
+                "date": "Date",
+                "article_count": "Articles",
+            },
+        )
+
+        st.plotly_chart(
+            fig,
+            use_container_width=True,
+        )
+
+    else:
+
+        st.info(
+            "No publication data available."
+        )
+
+
+st.divider()
+
+
+# -------------------------------------
+# Monthly Analytics
+# -------------------------------------
+
+st.subheader(
+    "Articles by Month"
+)
+
+
+if not month_df.empty:
+
+    month_df["period"] = (
+        month_df["month_name"]
+        + " "
+        + month_df["year"].astype(str)
+    )
+
+    fig = px.bar(
+        month_df,
+        x="period",
+        y="article_count",
+        labels={
+            "period": "Month",
+            "article_count": "Articles",
+        },
     )
 
     st.plotly_chart(
@@ -175,13 +322,55 @@ with right:
         use_container_width=True,
     )
 
+else:
+
+    st.info(
+        "No monthly analytics available."
+    )
+
+
+# -------------------------------------
+# Day of Week Analytics
+# -------------------------------------
+
+st.subheader(
+    "Articles by Day of Week"
+)
+
+
+if not day_df.empty:
+
+    fig = px.bar(
+        day_df,
+        x="day_of_week",
+        y="article_count",
+        labels={
+            "day_of_week": "Day",
+            "article_count": "Articles",
+        },
+    )
+
+    st.plotly_chart(
+        fig,
+        use_container_width=True,
+    )
+
+else:
+
+    st.info(
+        "No day-of-week analytics available."
+    )
+
+
 st.divider()
+
 
 # -------------------------------------
 # Articles Table
 # -------------------------------------
 
 st.subheader("Articles")
+
 
 st.dataframe(
     df,
