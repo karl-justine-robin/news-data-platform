@@ -163,17 +163,24 @@ def get_latest_pipeline_run(db: Session):
 
 def get_pipeline_stats(db: Session):
 
-    total_runs = db.query(PipelineRun).count()
+    total_runs = (
+        db.query(PipelineRun)
+        .count()
+    )
 
     successful_runs = (
         db.query(PipelineRun)
-        .filter(PipelineRun.status == "SUCCESS")
+        .filter(
+            PipelineRun.status == "SUCCESS"
+        )
         .count()
     )
 
     failed_runs = (
         db.query(PipelineRun)
-        .filter(PipelineRun.status == "FAILED")
+        .filter(
+            PipelineRun.status == "FAILED"
+        )
         .count()
     )
 
@@ -183,9 +190,44 @@ def get_pipeline_stats(db: Session):
         else 0
     )
 
+    average_duration = (
+        db.query(
+            func.avg(
+                PipelineRun.duration_seconds
+            )
+        )
+        .filter(
+            PipelineRun.status.in_(
+                ["SUCCESS", "FAILED"]
+            )
+        )
+        .scalar()
+        or 0
+    )
+
+    total_records = (
+        db.query(
+            func.sum(
+                PipelineRun.records_processed
+            )
+        )
+        .scalar()
+        or 0
+    )
+
     return {
         "total_runs": total_runs,
         "successful_runs": successful_runs,
         "failed_runs": failed_runs,
-        "success_rate": round(success_rate, 2),
+        "success_rate": round(
+            success_rate,
+            2,
+        ),
+        "average_duration_seconds": round(
+            float(average_duration),
+            2,
+        ),
+        "total_records_processed": int(
+            total_records
+        ),
     }

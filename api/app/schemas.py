@@ -100,6 +100,8 @@ class PipelineStats(BaseModel):
     successful_runs: int
     failed_runs: int
     success_rate: float
+    average_duration_seconds: float
+    total_records_processed: int
 
 
 class PipelineRunResponse(BaseModel):

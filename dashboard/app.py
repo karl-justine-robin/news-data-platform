@@ -6,8 +6,7 @@ import requests
 import streamlit as st
 
 from dotenv import load_dotenv
-
-from dashboard.api_client import APIClient
+from api_client import APIClient
 
 
 st.set_page_config(
@@ -170,6 +169,36 @@ month_df = pd.DataFrame(
 day_df = pd.DataFrame(
     day_data
 )
+
+
+# -------------------------------------
+# Pipeline Monitoring API
+# -------------------------------------
+
+try:
+
+    pipeline_stats = (
+        api_client
+        .get_pipeline_stats()
+    )
+
+    latest_pipeline_run = (
+        api_client
+        .get_latest_pipeline_run()
+    )
+
+    pipeline_runs = (
+        api_client
+        .get_pipeline_runs()
+    )
+
+except requests.RequestException as error:
+
+    st.error(
+        f"Unable to load pipeline monitoring: {error}"
+    )
+
+    st.stop()
 
 
 # -------------------------------------
@@ -366,10 +395,155 @@ st.divider()
 
 
 # -------------------------------------
+# Pipeline Monitoring
+# -------------------------------------
+
+st.subheader(
+    "⚙ Pipeline Monitoring"
+)
+
+pipeline_col1, pipeline_col2, pipeline_col3, pipeline_col4 = (
+    st.columns(4)
+)
+
+
+pipeline_col1.metric(
+    "Total Runs",
+    pipeline_stats["total_runs"],
+)
+
+
+pipeline_col2.metric(
+    "Success Rate",
+    f'{pipeline_stats["success_rate"]:.2f}%',
+)
+
+
+pipeline_col3.metric(
+    "Avg Duration",
+    f'{pipeline_stats["average_duration_seconds"]:.2f}s',
+)
+
+
+pipeline_col4.metric(
+    "Records Processed",
+    pipeline_stats["total_records_processed"],
+)
+
+
+st.subheader(
+    "Latest Pipeline Run"
+)
+
+
+if latest_pipeline_run:
+
+    latest_col1, latest_col2, latest_col3 = (
+        st.columns(3)
+    )
+
+    latest_col1.metric(
+        "Status",
+        latest_pipeline_run["status"],
+    )
+
+    latest_col2.metric(
+        "Records",
+        latest_pipeline_run["records_processed"],
+    )
+
+    latest_col3.metric(
+        "Duration",
+        f'{latest_pipeline_run["duration_seconds"]:.2f}s',
+    )
+
+    st.caption(
+        f'Started: {latest_pipeline_run["start_time"]}'
+    )
+
+    if latest_pipeline_run["end_time"]:
+
+        st.caption(
+            f'Finished: {latest_pipeline_run["end_time"]}'
+        )
+
+    if latest_pipeline_run["error_message"]:
+
+        st.error(
+            latest_pipeline_run["error_message"]
+        )
+
+else:
+
+    st.info(
+        "No pipeline runs available."
+    )
+
+
+# -------------------------------------
+# Pipeline Run History
+# -------------------------------------
+
+st.subheader(
+    "Pipeline Run History"
+)
+
+
+if pipeline_runs:
+
+    pipeline_df = pd.DataFrame(
+        pipeline_runs
+    )
+
+    pipeline_df = pipeline_df[
+        [
+            "id",
+            "pipeline_name",
+            "status",
+            "start_time",
+            "end_time",
+            "duration_seconds",
+            "records_processed",
+            "error_message",
+        ]
+    ]
+
+    pipeline_df = pipeline_df.rename(
+        columns={
+            "id": "Run ID",
+            "pipeline_name": "Pipeline",
+            "status": "Status",
+            "start_time": "Started",
+            "end_time": "Finished",
+            "duration_seconds": "Duration (s)",
+            "records_processed": "Records",
+            "error_message": "Error",
+        }
+    )
+
+    st.dataframe(
+        pipeline_df,
+        use_container_width=True,
+        hide_index=True,
+    )
+
+else:
+
+    st.info(
+        "No pipeline run history available."
+    )
+
+
+st.divider()
+
+
+# -------------------------------------
 # Articles Table
 # -------------------------------------
 
-st.subheader("Articles")
+st.subheader(
+    "Articles"
+)
 
 
 st.dataframe(

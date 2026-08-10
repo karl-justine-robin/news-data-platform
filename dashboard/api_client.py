@@ -86,3 +86,40 @@ class APIClient:
         response.raise_for_status()
 
         return response.json()
+
+
+
+    def get_pipeline_stats(self):
+
+        response = requests.get(
+            f"{self.base_url}/api/v1/pipeline/stats",
+            timeout=self.timeout,
+        )
+
+        response.raise_for_status()
+
+        return response.json()
+
+
+    def get_latest_pipeline_run(self):
+
+        response = requests.get(
+            f"{self.base_url}/api/v1/pipeline/runs/latest",
+            timeout=self.timeout,
+        )
+
+        response.raise_for_status()
+
+        return response.json()
+
+
+    def get_pipeline_runs(self):
+
+        response = requests.get(
+            f"{self.base_url}/api/v1/pipeline/runs",
+            timeout=self.timeout,
+        )
+
+        response.raise_for_status()
+
+        return response.json()

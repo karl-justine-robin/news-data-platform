@@ -201,3 +201,38 @@ def test_get_warehouse_sources_raises_http_error():
             assert str(error) == (
                 "500 Server Error"
             )
+
+
+def test_get_pipeline_runs():
+
+    client = APIClient(
+        "http://127.0.0.1:8000"
+    )
+
+    mock_response = Mock()
+
+    mock_response.json.return_value = [
+        {
+            "id": 1,
+            "pipeline_name": "news_pipeline",
+            "status": "SUCCESS",
+            "records_processed": 30,
+        }
+    ]
+
+    mock_response.raise_for_status.return_value = None
+
+    with patch(
+        "dashboard.api_client.requests.get",
+        return_value=mock_response,
+    ) as mock_get:
+
+        result = client.get_pipeline_runs()
+
+    assert result[0]["id"] == 1
+    assert result[0]["status"] == "SUCCESS"
+
+    mock_get.assert_called_once_with(
+        "http://127.0.0.1:8000/api/v1/pipeline/runs",
+        timeout=10,
+    )
