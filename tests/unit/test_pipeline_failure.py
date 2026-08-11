@@ -333,3 +333,21 @@ def test_pipeline_preserves_original_exception():
     assert call.kwargs["error_message"] == (
         "Collection failed"
     )
+
+
+def test_pipeline_logs_collect_failure():
+
+    pipeline = Pipeline()
+
+    pipeline.collector = MagicMock()
+    pipeline.tracker = MagicMock()
+
+    pipeline.collector.collect.side_effect = (
+        PipelineException("Collection failed")
+    )
+
+    with pytest.raises(PipelineException):
+
+        pipeline.run()
+
+    pipeline.tracker.finish.assert_called_once()
