@@ -100,3 +100,41 @@ API_URL = os.getenv(
 DASHBOARD_PORT = int(
     os.getenv("DASHBOARD_PORT", 8501)
 )
+
+
+def get_bool_env(
+    name: str,
+    default: bool = True,
+) -> bool:
+
+    value = os.getenv(name)
+
+    if value is None:
+        return default
+
+    return value.lower() == "true"
+
+
+# =====================================================
+# Pipeline Controls
+# =====================================================
+
+ENABLE_INCREMENTAL = get_bool_env(
+    "ENABLE_INCREMENTAL"
+)
+
+ENABLE_BRONZE = get_bool_env(
+    "ENABLE_BRONZE"
+)
+
+ENABLE_SILVER = get_bool_env(
+    "ENABLE_SILVER"
+)
+
+ENABLE_GOLD = get_bool_env(
+    "ENABLE_GOLD"
+)
+
+ENABLE_WAREHOUSE = get_bool_env(
+    "ENABLE_WAREHOUSE"
+)

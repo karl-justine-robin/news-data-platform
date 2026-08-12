@@ -66,3 +66,6 @@ def test_dashboard_days_endpoint():
     assert isinstance(data, list)
 
     assert len(data) > 0
+
+
+
