@@ -18,6 +18,8 @@ from api.app.middleware.request_logger import (
 )
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
+from config import validate_config
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -59,6 +61,8 @@ openapi_tags = [
         "description": "General API information.",
     },
 ]
+
+validate_config()
 
 app = FastAPI(
     title="News Data Platform API",

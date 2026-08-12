@@ -5,6 +5,32 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+
+# =====================================================
+# Configuration Validation
+# =====================================================
+
+def validate_config():
+    required = {
+        "DB_HOST": DB_HOST,
+        "DB_NAME": DB_NAME,
+        "DB_USER": DB_USER,
+        "DB_PASSWORD": DB_PASSWORD,
+    }
+
+    missing = [
+        name
+        for name, value in required.items()
+        if not value
+    ]
+
+    if missing:
+        raise RuntimeError(
+            "Missing required environment variables: "
+            + ", ".join(missing)
+        )
+
+
 # =====================================================
 # Project
 # =====================================================
@@ -21,6 +47,7 @@ LOG_LEVEL = os.getenv(
     "INFO",
 )
 
+
 # =====================================================
 # Data
 # =====================================================
@@ -29,15 +56,23 @@ DATA_DIR = PROJECT_ROOT / "data"
 
 SAMPLE_DATA_DIR = DATA_DIR / "sample_data"
 
+
 # =====================================================
 # Database
 # =====================================================
 
 DB_HOST = os.getenv("DB_HOST")
-DB_PORT = int(os.getenv("DB_PORT", 5432))
+
+DB_PORT = int(
+    os.getenv("DB_PORT", 5432)
+)
+
 DB_NAME = os.getenv("DB_NAME")
+
 DB_USER = os.getenv("DB_USER")
+
 DB_PASSWORD = os.getenv("DB_PASSWORD")
+
 
 # =====================================================
 # API
@@ -56,6 +91,7 @@ API_URL = os.getenv(
     "API_URL",
     "http://127.0.0.1:8000",
 )
+
 
 # =====================================================
 # Dashboard
