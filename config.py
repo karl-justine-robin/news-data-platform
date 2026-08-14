@@ -112,8 +112,18 @@ def get_bool_env(
     if value is None:
         return default
 
-    return value.lower() == "true"
+    value = value.strip().lower()
 
+    if value == "true":
+        return True
+
+    if value == "false":
+        return False
+
+    raise ValueError(
+        f"Invalid boolean value for {name}: {value!r}. "
+        "Expected 'true' or 'false'."
+    )
 
 # =====================================================
 # Pipeline Controls
