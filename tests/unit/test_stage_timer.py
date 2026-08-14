@@ -54,3 +54,22 @@ def test_stage_timer_fail():
         )
 
     assert elapsed == 1.25
+
+
+def test_stage_timer_finish_logs_duration(caplog):
+    timer = StageTimer("TEST")
+
+    with caplog.at_level("INFO"):
+        timer.start()
+        timer.finish()
+
+    assert "[TEST] Starting" in caplog.text
+    assert "[TEST] Completed" in caplog.text
+    assert "duration=" in caplog.text
+
+def test_stage_timer_records_stage_name():
+    timer = StageTimer("COLLECT")
+
+    assert timer.stage_name == "COLLECT"
+
+
