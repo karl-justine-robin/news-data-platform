@@ -208,3 +208,56 @@ def test_pipeline_logs_execution_time(caplog):
 
     assert "Execution time:" in caplog.text
     assert "seconds" in caplog.text
+
+
+def test_pipeline_generates_quality_report_from_validation_metrics():
+
+    pipeline = Pipeline()
+
+    pipeline.collector = MagicMock()
+    pipeline.schema_validator = MagicMock()
+    pipeline.preprocessor = MagicMock()
+    pipeline.transformer = MagicMock()
+    pipeline.incremental_filter = MagicMock()
+    pipeline.validator = MagicMock()
+    pipeline.silver_writer = MagicMock()
+    pipeline.gold_writer = MagicMock()
+    pipeline.loader = MagicMock()
+    pipeline.watermark_service = MagicMock()
+    pipeline.tracker = MagicMock()
+    pipeline.quality_service = MagicMock()
+
+    pipeline.collector.collect.return_value = [
+        {
+            "source": "Reuters",
+            "items": [],
+        }
+    ]
+
+    pipeline.preprocessor.preprocess.return_value = [
+        {
+            "source": "Reuters",
+            "items": [],
+        }
+    ]
+
+    pipeline.transformer.transform.return_value = []
+
+    pipeline.incremental_filter.filter.return_value = MagicMock(
+        new_articles=[],
+        latest_watermarks={},
+    )
+
+    metrics = MagicMock()
+
+    pipeline.validator.validate.return_value = MagicMock(
+        valid_articles=[],
+        invalid_articles=[],
+        metrics=metrics,
+    )
+
+    pipeline.run()
+
+    pipeline.quality_service.generate_report.assert_called_once_with(
+        metrics
+    )
