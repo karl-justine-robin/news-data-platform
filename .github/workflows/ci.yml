@@ -52,6 +52,32 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Debug Python import
+        run: |
+          pwd
+
+          echo "=== Git root ==="
+          git rev-parse --show-toplevel
+
+          echo "=== models.py files ==="
+          find . -path "*/src/database/models.py" -print
+
+          echo "=== Current models.py ==="
+          sed -n '1,220p' src/database/models.py
+
+          echo "=== Python path ==="
+          python -c "import sys; print('\n'.join(sys.path))"
+
+          echo "=== Import src ==="
+          python -c "import src; print(src); print(getattr(src, '__file__', None)); print(list(src.__path__))"
+
+          echo "=== Import src.database ==="
+          python -c "import src.database; print(src.database); print(getattr(src.database, '__file__', None)); print(list(src.database.__path__))"
+
+          echo "=== Import models ==="
+          python -c "import src.database.models as m; print(m.__file__); print(hasattr(m, 'DimDate')); print([x for x in dir(m) if x.startswith('Dim') or x.startswith('Fact')])"
+          
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -87,8 +113,3 @@ jobs:
           echo "=== src ==="
           find src -maxdepth 4 -type f | sort
 
-      - name: Debug Python imports
-        run: |
-          python -c "import sys; print('\n'.join(sys.path))"
-          python -c "import src.database.models as m; print(m.__file__)"
-          python -c "print(open('src/database/models.py').read())"

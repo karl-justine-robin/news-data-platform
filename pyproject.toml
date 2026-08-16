@@ -8,14 +8,10 @@ version = "0.1.0"
 description = "News Data Platform"
 requires-python = ">=3.11"
 
-[tool.setuptools]
-packages = [
-    "api",
-    "api.app",
-    "api.app.routers",
-    "src",
-    "src.database",
-    "src.framework",
+[tool.setuptools.packages.find]
+include = [
+    "api*",
+    "src*",
 ]
 
 [tool.pytest.ini_options]
