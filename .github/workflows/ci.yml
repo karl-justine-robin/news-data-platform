@@ -65,7 +65,7 @@ jobs:
 
       - name: Create database tables
         run: |
-          python api/create_tables.py
+          python -m api.create_tables
 
       - name: Install PostgreSQL client
         run: |
