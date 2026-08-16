@@ -76,3 +76,19 @@ jobs:
       - name: Run tests with coverage
         run: |
           pytest --cov=src --cov-report=term-missing --cov-fail-under=100
+
+
+      - name: Debug repository structure
+        run: |
+          pwd
+          echo "=== Repository ==="
+          find . -maxdepth 4 -type f | sort | head -200
+
+          echo "=== src ==="
+          find src -maxdepth 4 -type f | sort
+
+      - name: Debug Python imports
+        run: |
+          python -c "import sys; print('\n'.join(sys.path))"
+          python -c "import src.database.models as m; print(m.__file__)"
+          python -c "print(open('src/database/models.py').read())"
