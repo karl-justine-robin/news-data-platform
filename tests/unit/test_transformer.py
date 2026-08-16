@@ -1,4 +1,8 @@
-from src.framework.transformer.transformer import Transformer
+from unittest.mock import patch
+
+from src.framework.transformer.transformer import (
+    Transformer,
+)
 
 
 def test_transform_valid_feed():
@@ -121,3 +125,28 @@ def test_transform_preserves_source():
     articles = transformer.transform(feeds)
 
     assert articles[0]["source"] == "CNBC"
+
+
+def test_unknown_source_is_skipped():
+
+    transformer = Transformer()
+
+    with patch(
+        "src.framework.transformer.transformer.JsonMapper.get_mapping",
+        return_value=None,
+    ):
+
+        result = transformer.transform(
+            [
+                {
+                    "source": "UnknownSource",
+                    "items": [
+                        {
+                            "title": "Test Article",
+                        }
+                    ],
+                }
+            ]
+        )
+
+    assert result == []

@@ -52,3 +52,10 @@ def test_get_latest_metrics():
     result = service.get_latest_metrics()
 
     assert result is metrics
+
+
+def test_quality_score_returns_100_when_no_records():
+
+    metrics = QualityMetrics()
+
+    assert metrics.quality_score == 100.0
