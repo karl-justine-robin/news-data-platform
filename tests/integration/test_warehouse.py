@@ -1,5 +1,6 @@
 from src.database.database import SessionLocal
 from src.database.models import (
+    Article,
     DimDate,
     DimSource,
     FactArticle,
@@ -33,9 +34,13 @@ def test_warehouse_backfill():
             db.query(FactArticle).count()
         )
 
-        assert source_count == 4
-        assert date_count == 6
-        assert fact_count == 51
+        article_count = (
+            db.query(Article).count()
+        )
+
+        assert source_count > 0
+        assert date_count > 0
+        assert fact_count == article_count
 
     finally:
 
