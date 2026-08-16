@@ -155,3 +155,63 @@ def test_latest_watermark_is_kept():
         result.latest_watermarks["Reuters"]
         == "2026-08-09"
     )
+
+
+def test_duplicate_articles_are_not_processed_twice():
+
+    incremental = IncrementalFilter()
+
+    incremental.watermark_service.repository.save({})
+
+    articles = [
+        {
+            "source": "Reuters",
+            "published_at": "2026-08-09",
+            "canonical_url": (
+                "https://example.com/article-1"
+            ),
+        },
+        {
+            "source": "Reuters",
+            "published_at": "2026-08-09",
+            "canonical_url": (
+                "https://example.com/article-1"
+            ),
+        },
+    ]
+
+    result = incremental.filter(
+        articles
+    )
+
+    assert len(result.new_articles) == 1
+
+
+def test_different_articles_are_both_processed():
+
+    incremental = IncrementalFilter()
+
+    incremental.watermark_service.repository.save({})
+
+    articles = [
+        {
+            "source": "Reuters",
+            "published_at": "2026-08-09",
+            "canonical_url": (
+                "https://example.com/article-1"
+            ),
+        },
+        {
+            "source": "Reuters",
+            "published_at": "2026-08-09",
+            "canonical_url": (
+                "https://example.com/article-2"
+            ),
+        },
+    ]
+
+    result = incremental.filter(
+        articles
+    )
+
+    assert len(result.new_articles) == 2

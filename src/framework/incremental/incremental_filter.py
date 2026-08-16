@@ -25,6 +25,8 @@ class IncrementalFilter:
 
         latest_watermarks = {}
 
+        seen_articles = set()
+
         for article in articles:
 
             source = article["source"]
@@ -32,6 +34,21 @@ class IncrementalFilter:
             published_at = str(
                 article["published_at"]
             )
+
+            canonical_url = article.get(
+                "canonical_url"
+            )
+
+            if canonical_url:
+                article_key = (
+                    source,
+                    canonical_url,
+                )
+
+                if article_key in seen_articles:
+                    continue
+
+                seen_articles.add(article_key)
 
             article_date = datetime.fromisoformat(
                 published_at
